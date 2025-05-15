@@ -59,13 +59,19 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Sección Alumnos */}
-        <div className="flex-grow flex justify-center">
+        {/* Sección Alumnos y Contacto */}
+        <div className="flex justify-center items-center gap-8">
           <Link
             href="/alumnos"
-            className="text-gray-900 hover:text-[#33c4ff] transition-colors duration-300  border-[#33c4ff font-medium text-xl"
+            className="text-gray-900 hover:text-[#33c4ff] transition-colors duration-300 font-medium text-xl"
           >
             Alumnos
+          </Link>
+          <Link
+            href="/contacto"
+            className="text-gray-900 hover:text-[#33c4ff] transition-colors duration-300 font-medium text-xl"
+          >
+            Contacto
           </Link>
         </div>
 
