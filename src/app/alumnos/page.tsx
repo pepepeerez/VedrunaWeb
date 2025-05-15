@@ -7,7 +7,7 @@ export default async function Alumnos() {
     const session = await getServerSession(authOptions);
   
     if (!session || !session.user?.email?.endsWith("@a.vedrunasevillasj.es")) {
-      redirect("/");
+      redirect("/layaut");
     }
   
     return (

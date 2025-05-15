@@ -10,9 +10,9 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ profile }) {
-      // Solo deja pasar correos del dominio del instituto
-      return profile?.email?.endsWith("@a.vedrunasevillasj.es") ?? false;
+    async signIn() {
+      // Permite iniciar sesión a cualquier correo
+      return true;
     },
     async session({ session }) {
       return session;

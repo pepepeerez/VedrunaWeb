@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <div className="bg-gray-50 text-gray-800 min-h-screen">
       {/* Hero section */}
-      <section className="bg-blue-600 text-white py-16 text-center">
+      <section className=" text-white py-16 text-center">
         <div className="container mx-auto px-6">
           <div className="flex justify-center mb-6">
             <Image src={Logo} alt="Logo del Instituto" width={300} height={300} />
