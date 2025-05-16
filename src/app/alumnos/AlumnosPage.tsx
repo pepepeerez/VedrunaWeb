@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Trash2 } from "lucide-react";
 
 interface Publication {
   idPublication: string;
   email: string;
-  name?: string; // Lo dejamos opcional por compatibilidad
+  name?: string;
   title: string;
   description: string;
   image?: string;
@@ -20,24 +20,31 @@ interface Props {
   email?: string;
 }
 
-export default function AlumnosPage({ isAutorizado, nombre }: Props) {
+const isImage = (url: string) => /\.(jpg|jpeg|png|gif|svg)$/i.test(url);
+
+const canDelete = (email?: string) =>
+  email?.endsWith("@vedruna.es") ||
+  email?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es";
+
+export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
   const router = useRouter();
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAutorizado) {
-      setTimeout(() => {
-        router.push("/");
-      }, 3000);
+      setTimeout(() => router.push("/"), 3000);
       return;
     }
 
     async function fetchPublicaciones() {
       try {
         const res = await fetch("http://localhost:8080/vedruna/publications");
-        if (!res.ok) throw new Error("Error al cargar publicaciones");
+        if (!res.ok) throw new Error();
         const data = await res.json();
         setPublicaciones(data);
       } catch {
@@ -49,6 +56,29 @@ export default function AlumnosPage({ isAutorizado, nombre }: Props) {
 
     fetchPublicaciones();
   }, [isAutorizado, router]);
+
+  const confirmDelete = (id: string) => {
+    setSelectedId(id);
+    setModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedId) return;
+    setDeletingId(selectedId);
+    try {
+      const res = await fetch(`http://localhost:8080/vedruna/publications/${selectedId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error();
+      setPublicaciones((prev) => prev.filter((pub) => pub.idPublication !== selectedId));
+    } catch {
+      alert("No se pudo eliminar la publicación.");
+    } finally {
+      setDeletingId(null);
+      setModalOpen(false);
+      setSelectedId(null);
+    }
+  };
 
   if (!isAutorizado) {
     return (
@@ -80,39 +110,93 @@ export default function AlumnosPage({ isAutorizado, nombre }: Props) {
       )}
 
       <div className="flex flex-col space-y-6">
-        {publicaciones.map((pub) => (
-          <article
-            key={pub.idPublication}
-            className="flex flex-col md:flex-row bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-          >
-            {pub.image && (
-              <img
-                src={pub.image}
-                alt={pub.title || "Imagen de publicación"}
-                className="w-full md:w-48 h-48 object-cover"
-              />
-            )}
-            <div className="p-6 flex flex-col justify-between">
-              <div>
-                <h2 className="text-2xl font-semibold mb-2">{pub.title}</h2>
-                <p className="text-gray-700 mb-4 whitespace-pre-wrap">{pub.description}</p>
+        {publicaciones.map((pub) => {
+          let fileContent = null;
+          if (pub.image) {
+            fileContent = isImage(pub.image) ? (
+              <a href={pub.image} download className="w-full md:w-48 h-48 block">
+                <img
+                  src={pub.image}
+                  alt={pub.title || "Imagen"}
+                  className="w-full h-full object-cover"
+                />
+              </a>
+            ) : (
+              <div className="w-full md:w-48 h-48 flex items-center justify-center bg-gray-100 p-4">
+                <a href={pub.image} download className="text-blue-600 underline text-sm">
+                  Descargar archivo
+                </a>
               </div>
-              <div className="text-sm text-gray-500">
-                <p>
-                  Publicado por:{" "}
-                  <span className="font-medium">
-                    {pub.name || "Anónimo"}
-                  </span>
-                </p>
-                <p>
-                  {new Date(pub.createdAt).toLocaleDateString()}{" "}
-                  {new Date(pub.createdAt).toLocaleTimeString()}
-                </p>
+            );
+          }
+
+          return (
+            <article
+              key={pub.idPublication}
+              className="flex flex-col md:flex-row bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+            >
+              {fileContent}
+              <div className="p-6 flex flex-col justify-between flex-grow">
+                <div>
+                  <h2 className="text-xl font-semibold mb-2 flex items-center justify-between">
+                    <span>{pub.title}</span>
+                    {canDelete(email) && (
+                      <button
+                        onClick={() => confirmDelete(pub.idPublication)}
+                        className="ml-2 px-2 py-0.5 text-xs bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 transition-all"
+                        title="Eliminar publicación"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                  </h2>
+                  <p className="text-gray-700 mb-4 whitespace-pre-wrap">{pub.description}</p>
+                </div>
+                <div className="text-sm text-gray-500">
+                  <p>
+                    Publicado por: <span className="font-medium">{pub.name || "Anónimo"}</span>
+                  </p>
+                  <p>
+                    {new Date(pub.createdAt).toLocaleDateString()}{" "}
+                    {new Date(pub.createdAt).toLocaleTimeString()}
+                  </p>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
+
+      {/* Modal de confirmación */}
+      {modalOpen && (
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+        <div className="bg-white rounded-xl shadow-2xl p-6 w-[90vw] max-w-sm text-center border border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Confirmar eliminación</h2>
+          <p className="text-gray-600 mb-6">
+            ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.
+          </p>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => {
+                setModalOpen(false);
+                setSelectedId(null);
+              }}
+              className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-sm"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={deletingId !== null}
+              className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm disabled:opacity-50"
+            >
+              {deletingId ? "Eliminando..." : "Eliminar"}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
     </div>
   );
 }

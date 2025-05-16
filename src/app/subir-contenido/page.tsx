@@ -8,7 +8,7 @@ export default function CrearContenidoPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -20,33 +20,35 @@ export default function CrearContenidoPage() {
       return;
     }
 
+    if (!file) {
+      setMessage("Debes seleccionar un archivo.");
+      return;
+    }
+
     setLoading(true);
     setMessage("");
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("email", session?.user?.email || "");
+    formData.append("name", session?.user?.name || "");
+    formData.append("file", file);
 
     try {
       const response = await fetch("http://localhost:8080/vedruna/publications", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: session?.user?.email,
-          name: session?.user?.name,
-          title,
-          description,
-          image,
-        }),
+        body: formData,
       });
 
       if (response.ok) {
         setMessage("¡Publicación creada con éxito!");
         setTitle("");
         setDescription("");
-        setImage("");
-        // Quitar mensaje después de 3 segundos
-        setTimeout(() => {
-          setMessage("");
-        }, 3000);
+        setFile(null);
+        // Limpia el input file también
+        (document.getElementById("file") as HTMLInputElement).value = "";
+        setTimeout(() => setMessage(""), 3000);
       } else {
         const errorData = await response.json();
         setMessage(`Error: ${errorData.message || "Algo salió mal"}`);
@@ -66,7 +68,7 @@ export default function CrearContenidoPage() {
       {!session ? (
         <p className="text-red-500 text-center">Debes iniciar sesión para publicar.</p>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
           <div>
             <label className="block font-semibold mb-2" htmlFor="title">
               Título <span className="text-red-600">*</span>
@@ -98,16 +100,15 @@ export default function CrearContenidoPage() {
           </div>
 
           <div>
-            <label className="block font-semibold mb-2" htmlFor="image">
-              URL de la imagen
+            <label className="block font-semibold mb-2" htmlFor="file">
+              Archivo (imagen, PDF, Word, etc.)
             </label>
             <input
-              id="image"
-              type="url"
-              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              placeholder="https://ejemplo.com/imagen.jpg"
+              id="file"
+              type="file"
+              className="w-full"
+              accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.txt"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
           </div>
 
