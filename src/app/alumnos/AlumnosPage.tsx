@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 interface Publication {
   idPublication: string;
@@ -114,89 +115,90 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
           let fileContent = null;
           if (pub.image) {
             fileContent = isImage(pub.image) ? (
-              <a href={pub.image} download className="w-full md:w-48 h-48 block">
-                <img
-                  src={pub.image}
-                  alt={pub.title || "Imagen"}
-                  className="w-full h-full object-cover"
-                />
-              </a>
+              <img
+                src={pub.image}
+                alt={pub.title || "Imagen"}
+                className="w-full md:w-48 h-48 object-cover"
+              />
             ) : (
               <div className="w-full md:w-48 h-48 flex items-center justify-center bg-gray-100 p-4">
-                <a href={pub.image} download className="text-blue-600 underline text-sm">
-                  Descargar archivo
-                </a>
+                <span className="text-gray-500 text-sm">Archivo adjunto</span>
               </div>
             );
           }
 
           return (
-            <article
+            <Link
               key={pub.idPublication}
-              className="flex flex-col md:flex-row bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+              href={`/alumnos/publicacion/${pub.idPublication}`}
+              className="block"
             >
-              {fileContent}
-              <div className="p-6 flex flex-col justify-between flex-grow">
-                <div>
-                  <h2 className="text-xl font-semibold mb-2 flex items-center justify-between">
-                    <span>{pub.title}</span>
-                    {canDelete(email) && (
-                      <button
-                        onClick={() => confirmDelete(pub.idPublication)}
-                        className="ml-2 px-2 py-0.5 text-xs bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 transition-all"
-                        title="Eliminar publicación"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    )}
-                  </h2>
-                  <p className="text-gray-700 mb-4 whitespace-pre-wrap">{pub.description}</p>
+              <article className="flex flex-col md:flex-row bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+                {fileContent && <div className="flex-shrink-0">{fileContent}</div>}
+                <div className="p-6 flex flex-col justify-between flex-grow">
+                  <div>
+                    <h2 className="text-xl font-semibold mb-2 flex items-center justify-between">
+                      <span>{pub.title}</span>
+                      {canDelete(email) && (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            confirmDelete(pub.idPublication);
+                          }}
+                          className="ml-2 px-2 py-0.5 text-xs bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 transition-all"
+                          title="Eliminar publicación"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </h2>
+                    <p className="text-gray-700 mb-4 whitespace-pre-wrap">{pub.description}</p>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    <p>
+                      Publicado por: <span className="font-medium">{pub.name || "Anónimo"}</span>
+                    </p>
+                    <p>
+                      {new Date(pub.createdAt).toLocaleDateString()}{" "}
+                      {new Date(pub.createdAt).toLocaleTimeString()}
+                    </p>
+                  </div>
                 </div>
-                <div className="text-sm text-gray-500">
-                  <p>
-                    Publicado por: <span className="font-medium">{pub.name || "Anónimo"}</span>
-                  </p>
-                  <p>
-                    {new Date(pub.createdAt).toLocaleDateString()}{" "}
-                    {new Date(pub.createdAt).toLocaleTimeString()}
-                  </p>
-                </div>
-              </div>
-            </article>
+              </article>
+            </Link>
           );
         })}
       </div>
 
       {/* Modal de confirmación */}
       {modalOpen && (
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-        <div className="bg-white rounded-xl shadow-2xl p-6 w-[90vw] max-w-sm text-center border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Confirmar eliminación</h2>
-          <p className="text-gray-600 mb-6">
-            ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.
-          </p>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => {
-                setModalOpen(false);
-                setSelectedId(null);
-              }}
-              className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-sm"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleDelete}
-              disabled={deletingId !== null}
-              className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm disabled:opacity-50"
-            >
-              {deletingId ? "Eliminando..." : "Eliminar"}
-            </button>
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-[90vw] max-w-sm text-center border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">Confirmar eliminación</h2>
+            <p className="text-gray-600 mb-6">
+              ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                  setSelectedId(null);
+                }}
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-sm"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deletingId !== null}
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm disabled:opacity-50"
+              >
+                {deletingId ? "Eliminando..." : "Eliminar"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-
+      )}
     </div>
   );
 }
