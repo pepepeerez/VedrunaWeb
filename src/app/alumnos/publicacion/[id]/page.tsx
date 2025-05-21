@@ -69,6 +69,22 @@ export default function PublicacionPage({ params }: Props) {
     userEmail?.endsWith("@vedruna.es") ||
     userEmail?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es";
 
+  function tiempoRelativo(fechaISO: string): string {
+    const ahora = new Date();
+    const fecha = new Date(fechaISO);
+    const diffMs = ahora.getTime() - fecha.getTime();
+
+    const minutos = Math.floor(diffMs / (1000 * 60));
+    if (minutos < 1) return "justo ahora";
+    if (minutos < 60) return `hace ${minutos} minuto${minutos > 1 ? "s" : ""}`;
+
+    const horas = Math.floor(minutos / 60);
+    if (horas < 24) return `hace ${horas} hora${horas > 1 ? "s" : ""}`;
+
+    const dias = Math.floor(horas / 24);
+    return `hace ${dias} día${dias > 1 ? "s" : ""}`;
+  }
+
   const handleSubmit = async () => {
     if (!nuevoComentario.trim()) return;
 
@@ -142,7 +158,7 @@ export default function PublicacionPage({ params }: Props) {
               <div>
                 <p className="font-semibold">{c.name || c.email}</p>
                 <p>{c.mensaje}</p>
-                <small className="text-gray-500">{new Date(c.createdAt).toLocaleString()}</small>
+                <small className="text-gray-500">{tiempoRelativo(c.createdAt)}</small>
               </div>
               {canDeleteComment(email) && (
                 <button
@@ -178,33 +194,32 @@ export default function PublicacionPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Modal confirmación para borrar comentario */}
       {comentarioEliminarId && (
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-        <div className="bg-white rounded-xl shadow-2xl p-6 w-[90vw] max-w-sm text-center border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Confirmar eliminación</h2>
-          <p className="text-gray-600 mb-6">
-            ¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.
-          </p>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => setComentarioEliminarId(null)}
-              className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-sm"
-              disabled={deletingComentario}
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleDeleteComentario}
-              disabled={deletingComentario}
-              className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm disabled:opacity-50"
-            >
-              {deletingComentario ? "Eliminando..." : "Eliminar"}
-            </button>
+        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-6 w-[90vw] max-w-sm text-center border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">Confirmar eliminación</h2>
+            <p className="text-gray-600 mb-6">
+              ¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setComentarioEliminarId(null)}
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-sm"
+                disabled={deletingComentario}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeleteComentario}
+                disabled={deletingComentario}
+                className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 text-sm disabled:opacity-50"
+              >
+                {deletingComentario ? "Eliminando..." : "Eliminar"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
     </div>
   );
 }
