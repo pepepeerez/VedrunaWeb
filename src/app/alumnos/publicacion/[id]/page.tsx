@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
@@ -142,7 +143,7 @@ export default function PublicacionPage({ params }: Props) {
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto p-6 relative">
       <h1 className="text-3xl font-bold mb-4">{publicacion?.title}</h1>
       <p className="mb-6 whitespace-pre-wrap">{publicacion?.description}</p>
 
@@ -185,12 +186,22 @@ export default function PublicacionPage({ params }: Props) {
             onChange={(e) => setNuevoComentario(e.target.value)}
             rows={4}
           />
-          <button
-            onClick={handleSubmit}
-            className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Enviar Comentario
-          </button>
+          <div className="mt-4 flex gap-4 justify-end">
+            <button
+              onClick={handleSubmit}
+              className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm"
+            >
+              Enviar Comentario
+            </button>
+
+            <Link
+              href="/alumnos"
+              className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 flex items-center justify-center text-sm"
+              aria-label="Volver a Alumnos"
+            >
+              ←
+            </Link>
+          </div>
         </div>
       </section>
 
