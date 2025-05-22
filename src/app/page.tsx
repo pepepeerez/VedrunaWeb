@@ -1,70 +1,99 @@
 // app/page.tsx
 import Image from "next/image";
 import Logo from "../../public/logo.png";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <div className="bg-gray-50 text-gray-800 min-h-screen">
+    <div className="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
       {/* Hero section */}
-      <section className=" text-white py-16 text-center">
-        <div className="container mx-auto px-6">
-          <div className="flex justify-center mb-6">
-            <Image src={Logo} alt="Logo del Instituto" width={300} height={300} />
-          </div>
-          <h1 className="text-4xl font-extrabold mb-4">
+      <section
+        className="relative bg-gradient-to-br from-blue-700 to-blue-900 text-white min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-6 sm:px-12 lg:px-24 text-center pt-16"
+      >
+        <div className="container max-w-md flex flex-col items-center">
+          <Image
+            src={Logo}
+            alt="Logo del Instituto"
+            width={140}
+            height={140}
+            className="mb-8 drop-shadow-lg"
+            priority
+          />
+          <h1 className="text-3xl sm:text-4xl font-extrabold mb-6 leading-snug">
             ¡Bienvenidos al ciclo formativo de DAM y DAW!
           </h1>
-          <p className="text-xl max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl max-w-xs sm:max-w-md mb-10 font-light leading-relaxed">
             Desarrolla tus habilidades en programación y crea el futuro digital.
           </p>
+          <Link
+            href="/alumnos"
+            className="inline-block bg-white text-blue-900 font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition"
+          >
+            Acceder al Área de Alumnos
+          </Link>
         </div>
       </section>
 
-      {/* Sobre los ciclos */}
-      <section className="py-12 px-6 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-blue-600 mb-4">¿Qué ofrecemos?</h2>
-        <p className="mb-4">
-          En nuestro instituto, te ofrecemos una formación de calidad en los ciclos de Desarrollo de Aplicaciones Multiplataforma (DAM) y Desarrollo de Aplicaciones Web (DAW).
-        </p>
-        <p>
-          Estos ciclos están diseñados para prepararte con conocimientos actuales y habilidades prácticas necesarias para enfrentarte al mundo profesional de la tecnología y la programación.
-        </p>
-      </section>
+      {/* Main content */}
+      <main className="flex-grow max-w-4xl mx-auto py-16 px-6 sm:px-12 lg:px-0 space-y-20">
+        {/* ¿Qué ofrecemos? */}
+        <section>
+          <h2 className="text-3xl font-bold text-blue-800 mb-6 border-b-4 border-blue-300 inline-block pb-1">
+            ¿Qué ofrecemos?
+          </h2>
+          <p className="text-lg text-gray-700 mb-4 leading-relaxed">
+            En nuestro instituto, te ofrecemos una formación de calidad en los ciclos de Desarrollo de Aplicaciones Multiplataforma (DAM) y Desarrollo de Aplicaciones Web (DAW).
+          </p>
+          <p className="text-lg text-gray-700 leading-relaxed">
+            Estos ciclos están diseñados para prepararte con conocimientos actuales y habilidades prácticas necesarias para enfrentarte al mundo profesional de la tecnología y la programación.
+          </p>
+        </section>
 
-      {/* Qué aprenderás */}
-      <section className="bg-white py-12 px-6 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold text-blue-600 mb-4">¿Qué aprenderás?</h2>
-        <ul className="list-disc list-inside space-y-2">
-          <li>Desarrollo de aplicaciones móviles y web.</li>
-          <li>Creación de bases de datos y gestión de servidores.</li>
-          <li>Programación con los lenguajes más demandados (Java, JavaScript, HTML, CSS...).</li>
-          <li>Desarrollo de software para diferentes plataformas y dispositivos.</li>
-        </ul>
-      </section>
+        {/* ¿Qué aprenderás? */}
+        <section className="bg-white rounded-xl shadow-md p-8">
+          <h2 className="text-3xl font-semibold text-blue-700 mb-6 border-b border-blue-300 pb-2">
+            ¿Qué aprenderás?
+          </h2>
+          <ul className="list-disc list-inside space-y-3 text-gray-700 text-lg">
+            <li>Desarrollo de aplicaciones móviles y web.</li>
+            <li>Creación de bases de datos y gestión de servidores.</li>
+            <li>Programación con los lenguajes más demandados (Java, JavaScript, HTML, CSS...).</li>
+            <li>Desarrollo de software para diferentes plataformas y dispositivos.</li>
+          </ul>
+        </section>
 
-      {/* Salidas profesionales */}
-      <section className="py-12 px-6 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold text-blue-600 mb-4">Oportunidades profesionales</h2>
-        <ul className="list-disc list-inside space-y-2">
-          <li>Desarrollador de aplicaciones web y móviles.</li>
-          <li>Administrador de bases de datos.</li>
-          <li>Diseñador de interfaces y experiencia de usuario.</li>
-          <li>Programador full-stack.</li>
-        </ul>
-      </section>
+        {/* Oportunidades profesionales */}
+        <section>
+          <h2 className="text-3xl font-semibold text-blue-700 mb-6 border-b border-blue-300 pb-2">
+            Oportunidades profesionales
+          </h2>
+          <ul className="list-disc list-inside space-y-3 text-gray-700 text-lg">
+            <li>Desarrollador de aplicaciones web y móviles.</li>
+            <li>Administrador de bases de datos.</li>
+            <li>Diseñador de interfaces y experiencia de usuario.</li>
+            <li>Programador full-stack.</li>
+          </ul>
+        </section>
 
-      {/* Por qué elegirnos */}
-      <section className="bg-blue-100 py-12 px-6 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold text-blue-600 mb-4">¿Por qué elegirnos?</h2>
-        <ul className="list-disc list-inside space-y-2">
-          <li>Un equipo docente altamente cualificado.</li>
-          <li>Tecnología de vanguardia y herramientas profesionales.</li>
-          <li>Enfoque práctico con proyectos reales.</li>
-        </ul>
-        <p className="mt-6 font-bold text-center text-lg text-blue-700">
-          ¡Conviértete en un experto en el mundo digital y abre las puertas de tu futuro!
-        </p>
-      </section>
+        {/* ¿Por qué elegirnos? */}
+        <section className="bg-blue-100 rounded-xl p-8 text-blue-900">
+          <h2 className="text-3xl font-semibold mb-6 border-b border-blue-400 pb-2">
+            ¿Por qué elegirnos?
+          </h2>
+          <ul className="list-disc list-inside space-y-3 text-lg">
+            <li>Un equipo docente altamente cualificado.</li>
+            <li>Tecnología de vanguardia y herramientas profesionales.</li>
+            <li>Enfoque práctico con proyectos reales.</li>
+          </ul>
+          <p className="mt-8 font-bold text-center text-xl tracking-wide">
+            ¡Conviértete en un experto en el mundo digital y abre las puertas de tu futuro!
+          </p>
+        </section>
+      </main>
+
+      <footer className="bg-blue-900 text-white py-6 text-center text-sm">
+        &copy; {new Date().getFullYear()} Instituto DAM y DAW. Todos los derechos reservados.
+      </footer>
     </div>
   );
 }
