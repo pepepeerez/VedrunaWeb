@@ -90,10 +90,6 @@ export default function HomePage() {
           </p>
         </section>
       </main>
-
-      <footer className="bg-blue-900 text-white py-6 text-center text-sm">
-        &copy; {new Date().getFullYear()} Instituto DAM y DAW. Todos los derechos reservados.
-      </footer>
     </div>
   );
 }

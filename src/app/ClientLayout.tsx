@@ -3,17 +3,21 @@
 import { SessionProvider } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
+import Footer from "@/app/components/Footer"; 
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Oculta el NavBar principal para alumnos
   const hideNav = pathname.startsWith("/alumnos");
+  const hideFooter = false; // aquí puedes usar lógica como: pathname.startsWith("/admin") si quieres ocultarlo
 
   return (
-    <SessionProvider>
+  <SessionProvider>
+    <div className="flex flex-col min-h-screen">
       {!hideNav && <NavBar />}
-      {children}
-    </SessionProvider>
+      <main className="flex-grow">{children}</main> {/* ocupa el espacio */}
+      {!hideFooter && <Footer />}
+    </div>
+  </SessionProvider>
   );
 }
