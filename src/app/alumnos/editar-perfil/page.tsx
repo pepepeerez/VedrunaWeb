@@ -1,18 +1,19 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 
 export default function EditarPerfilPage() {
   const { data: session } = useSession();
   const email = session?.user?.email ?? "";
-  
+
   const [ciclo, setCiclo] = useState("");
   const [curso, setCurso] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [mensajeTipo, setMensajeTipo] = useState<"error" | "success" | "info">("info");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,17 +21,23 @@ export default function EditarPerfilPage() {
 
     async function fetchPerfil() {
       try {
-        const res = await fetch(`http://localhost:8080/vedruna/user-profile?email=${encodeURIComponent(email)}`);
+        const res = await fetch(`http://localhost:8080/vedruna/user-profile/${encodeURIComponent(email)}`);
         if (!res.ok) throw new Error("Error al cargar perfil");
         const data = await res.json();
-        if (data) {
+
+        if (data && Object.keys(data).length > 0) {
           setCiclo(data.ciclo || "");
           setCurso(data.curso || "");
           setDescripcion(data.descripcion || "");
           setGithub(data.githubLink || "");
           setLinkedin(data.linkedinLink || "");
+        } else {
+          setMensajeTipo("info");
+          setMensaje("Perfil no encontrado.");
         }
-      } catch  {
+      } catch (error) {
+        console.error(error);
+        setMensajeTipo("error");
         setMensaje("No se pudo cargar el perfil.");
       } finally {
         setLoading(false);
@@ -43,6 +50,7 @@ export default function EditarPerfilPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
+      setMensajeTipo("error");
       setMensaje("Debes iniciar sesión para editar el perfil.");
       return;
     }
@@ -65,88 +73,124 @@ export default function EditarPerfilPage() {
       });
 
       if (!res.ok) throw new Error("Error al guardar perfil");
+      setMensajeTipo("success");
       setMensaje("Perfil actualizado con éxito.");
     } catch {
+      setMensajeTipo("error");
       setMensaje("Error al actualizar el perfil.");
     }
   };
 
+  // Auto ocultar mensaje tras 5 segundos
+  useEffect(() => {
+    if (mensaje) {
+      const timer = setTimeout(() => setMensaje(""), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [mensaje]);
+
   if (!session) return <p>Debes iniciar sesión para editar tu perfil.</p>;
   if (loading) return <p>Cargando perfil...</p>;
 
+  // Estilos para mensaje según tipo
+  const mensajeClases = {
+    error: "bg-red-100 text-red-700 border border-red-400",
+    success: "bg-green-100 text-green-700 border border-green-400",
+    info: "bg-blue-100 text-blue-700 border border-blue-400",
+  };
+
   return (
-    <div className="max-w-md mx-auto mt-16 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-6">Editar Perfil</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-md mx-auto mt-16 p-8 bg-white rounded-lg shadow-lg">
+      {/* Mensaje arriba */}
+      {mensaje && (
+        <div
+          role="alert"
+          className={`mb-6 p-3 rounded-md text-center font-semibold ${mensajeClases[mensajeTipo]}`}
+        >
+          {mensaje}
+        </div>
+      )}
+
+      <h1 className="text-3xl font-extrabold mb-8 text-center text-gray-900">Editar Perfil</h1>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block mb-1 font-medium" htmlFor="ciclo">Ciclo formativo</label>
+          <label htmlFor="ciclo" className="block mb-2 font-semibold text-gray-700">
+            Ciclo formativo
+          </label>
           <input
-            type="text"
             id="ciclo"
+            type="text"
             value={ciclo}
             onChange={(e) => setCiclo(e.target.value)}
-            className="w-full border rounded px-3 py-2"
             placeholder="Ej: Desarrollo de Aplicaciones Web"
+            className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
           />
         </div>
+
         <div>
-          <label className="block mb-1 font-medium" htmlFor="curso">Curso</label>
+          <label htmlFor="curso" className="block mb-2 font-semibold text-gray-700">
+            Curso
+          </label>
           <input
-            type="text"
             id="curso"
+            type="text"
             value={curso}
             onChange={(e) => setCurso(e.target.value)}
-            className="w-full border rounded px-3 py-2"
             placeholder="Ej: 1º o 2º"
+            className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
           />
         </div>
+
         <div>
-          <label className="block mb-1 font-medium" htmlFor="descripcion">Descripción personal</label>
+          <label htmlFor="descripcion" className="block mb-2 font-semibold text-gray-700">
+            Descripción personal
+          </label>
           <textarea
             id="descripcion"
+            rows={5}
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            className="w-full border rounded px-3 py-2"
-            rows={4}
             placeholder="Cuéntanos sobre ti..."
+            className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition resize-none"
           />
         </div>
+
         <div>
-          <label className="block mb-1 font-medium" htmlFor="github">Link GitHub (opcional)</label>
+          <label htmlFor="github" className="block mb-2 font-semibold text-gray-700">
+            GitHub
+          </label>
           <input
-            type="url"
             id="github"
+            type="url"
             value={github}
             onChange={(e) => setGithub(e.target.value)}
-            className="w-full border rounded px-3 py-2"
             placeholder="https://github.com/tuusuario"
+            className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
           />
         </div>
+
         <div>
-          <label className="block mb-1 font-medium" htmlFor="linkedin">Link LinkedIn (opcional)</label>
+          <label htmlFor="linkedin" className="block mb-2 font-semibold text-gray-700">
+            LinkedIn
+          </label>
           <input
-            type="url"
             id="linkedin"
+            type="url"
             value={linkedin}
             onChange={(e) => setLinkedin(e.target.value)}
-            className="w-full border rounded px-3 py-2"
             placeholder="https://linkedin.com/in/tuusuario"
+            className="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition"
           />
         </div>
+
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-md transition"
         >
           Guardar cambios
         </button>
       </form>
-      {mensaje && <p className="mt-4 text-center text-gray-700">{mensaje}</p>}
-      <button
-        onClick={() => signOut()}
-        className="mt-6 text-red-600 hover:underline w-full"
-      >
-        Cerrar sesión
-      </button>
+      <div className="mt-20" /> {/* Espacio para footer */}
     </div>
   );
 }

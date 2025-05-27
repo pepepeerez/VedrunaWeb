@@ -197,35 +197,35 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
       </section>
 
       {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-300">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Confirmar eliminación
-            </h2>
-            <p className="text-gray-700 mb-6">
-              ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.
-            </p>
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => {
-                  setModalOpen(false);
-                  setSelectedId(null);
-                }}
-                className="px-5 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold transition"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deletingId !== null}
-                className="px-5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition disabled:opacity-50"
-              >
-                {deletingId ? "Eliminando..." : "Eliminar"}
-              </button>
-            </div>
+      <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-300">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            Confirmar eliminación
+          </h2>
+          <p className="text-gray-700 mb-6">
+            ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.
+          </p>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => {
+                setModalOpen(false);
+                setSelectedId(null);
+              }}
+              className="px-5 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold transition"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={deletingId !== null}
+              className="px-5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition disabled:opacity-50"
+            >
+              {deletingId ? "Eliminando..." : "Eliminar"}
+            </button>
           </div>
         </div>
-      )}
+      </div>
+    )}
     </main>
   );
 }

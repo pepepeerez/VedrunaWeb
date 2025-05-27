@@ -41,9 +41,9 @@ export default function NavbarAlumnos() {
   return (
     <nav
       className={clsx(
-        "sticky top-0 z-50 bg-white shadow-md transition-shadow duration-700 ease-in-out",
-        "h-18"
+        "sticky top-0 z-50 bg-white shadow-md transition-shadow duration-700 ease-in-out"
       )}
+      style={{ height: 72 }}
     >
       <div className="max-w-7xl mx-auto px-0 sm:px-0 lg:px-0 flex justify-between items-center h-full">
         {/* Logo pegado a la izquierda con margen negativo para sobresalir */}
@@ -74,6 +74,9 @@ export default function NavbarAlumnos() {
         <div className="hidden md:flex justify-center items-center gap-8 font-medium text-gray-900 text-lg flex-grow">
           <Link href="/alumnos" className="hover:text-[#33c4ff] transition-colors duration-300">
             Alumnos
+          </Link>
+          <Link href="/alumnos/lista" className="hover:text-[#33c4ff] transition-colors duration-300">
+            Usuarios
           </Link>
           <Link href="/contacto" className="hover:text-[#33c4ff] transition-colors duration-300">
             Contacto
@@ -186,6 +189,13 @@ export default function NavbarAlumnos() {
               onClick={() => setMenuOpen(false)}
             >
               Alumnos
+            </Link>
+            <Link
+              href="/alumnos/lista"
+              className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition"
+              onClick={() => setMenuOpen(false)}
+            >
+              Usuarios
             </Link>
             <Link
               href="/contacto"
