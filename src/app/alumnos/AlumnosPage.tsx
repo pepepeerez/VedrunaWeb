@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AlertTriangle, Trash2 } from "lucide-react";
 import Link from "next/link";
 
+
 interface Publication {
   idPublication: string;
   email: string;
@@ -32,6 +33,7 @@ const canDelete = (email?: string) =>
 export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
   const router = useRouter();
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
+  const [comentariosCount, setComentariosCount] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -50,6 +52,23 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
         if (!res.ok) throw new Error();
         const data = await res.json();
         setPublicaciones(data);
+
+        // Cargar conteo de comentarios para cada publicación
+        const counts: Record<string, number> = {};
+        await Promise.all(
+          data.map(async (pub: Publication) => {
+            try {
+              const countRes = await fetch(`http://localhost:8080/vedruna/comentarios/count/${pub.idPublication}`);
+              if (!countRes.ok) throw new Error();
+              const count = await countRes.json();
+              counts[pub.idPublication] = count;
+            } catch {
+              counts[pub.idPublication] = 0;
+            }
+          })
+        );
+        setComentariosCount(counts);
+
       } catch {
         setError("No se pudieron cargar las publicaciones.");
       } finally {
@@ -74,6 +93,14 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
       });
       if (!res.ok) throw new Error();
       setPublicaciones((prev) => prev.filter((pub) => pub.idPublication !== selectedId));
+
+      // Actualizar conteo comentarios quitando la publicación eliminada
+      setComentariosCount((prev) => {
+        const updated = { ...prev };
+        delete updated[selectedId];
+        return updated;
+      });
+
     } catch {
       alert("No se pudo eliminar la publicación.");
     } finally {
@@ -101,7 +128,7 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-6 flex justify-center">
-      <section className="w-full max-w-5xl pb-16">
+      <section className="w-full max-w-5xl pb-20">
         <h1 className="text-4xl font-extrabold text-blue-900 mb-8 tracking-tight text-center">
           Área de Alumnos
         </h1>
@@ -152,7 +179,11 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
                     <span>
                       Publicado por: <span className="font-medium text-gray-800">{pub.name || "Anónimo"}</span>
                     </span>
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-4">
+                      <span className="select-none text-gray-600">
+                        {comentariosCount[pub.idPublication] ?? 0} comentario
+                        {(comentariosCount[pub.idPublication] ?? 0) !== 1 ? "s" : ""}
+                      </span>
                       {canDelete(email) && (
                         <button
                           onClick={(e) => {
