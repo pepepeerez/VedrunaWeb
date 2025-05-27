@@ -56,7 +56,13 @@ export default function NavbarAlumnos() {
               )}
               style={{ width: 70, height: 70 }}
             >
-              <Image src="/logo2.jpeg" alt="Logo Vedruna" width={70} height={70} priority />
+              <Image
+                src="/logo2.jpeg"
+                alt="Logo Vedruna"
+                width={70}
+                height={70}
+                priority
+              />
             </div>
             <span
               className={clsx(
@@ -72,21 +78,35 @@ export default function NavbarAlumnos() {
 
         {/* Menú centrado */}
         <div className="hidden md:flex justify-center items-center gap-8 font-medium text-gray-900 text-lg flex-grow">
-          <Link href="/alumnos" className="hover:text-[#33c4ff] transition-colors duration-300">
+          <Link
+            href="/alumnos"
+            className="hover:text-[#33c4ff] transition-colors duration-300"
+          >
             Alumnos
           </Link>
-          <Link href="/alumnos/lista" className="hover:text-[#33c4ff] transition-colors duration-300">
+          <Link
+            href="/alumnos/lista"
+            className="hover:text-[#33c4ff] transition-colors duration-300"
+          >
             Usuarios
           </Link>
-          <Link href="/contacto" className="hover:text-[#33c4ff] transition-colors duration-300">
+          <Link
+            href="/contacto"
+            className="hover:text-[#33c4ff] transition-colors duration-300"
+          >
             Contacto
           </Link>
         </div>
 
         {/* Foto perfil pegada a la derecha sin margen */}
-        <div className="flex items-center gap-4 relative mr-0" ref={menuRef} style={{ minWidth: profileSize }}>
+        <div
+          className="flex items-center gap-4 relative mr-0"
+          ref={menuRef}
+          style={{ minWidth: profileSize }}
+        >
           {session ? (
             <>
+              {/* Mostrar "Añadir contenido" sólo si es autorizado */}
               {esAutorizadoParaContenido && (
                 <Link
                   href="/subir-contenido"
@@ -110,7 +130,12 @@ export default function NavbarAlumnos() {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 ) : (
                   <svg
@@ -120,7 +145,12 @@ export default function NavbarAlumnos() {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
                   </svg>
                 )}
               </button>
@@ -148,17 +178,24 @@ export default function NavbarAlumnos() {
                   className="absolute right-0 top-full mt-2 w-72 bg-white text-black rounded shadow-lg overflow-hidden z-50 p-4"
                 >
                   <div className="mb-2 truncate">
-                    <p className="font-semibold text-base sm:text-lg">{session.user?.name}</p>
-                    <p className="text-xs sm:text-sm text-gray-600 truncate">{session.user?.email}</p>
+                    <p className="font-semibold text-base sm:text-lg">
+                      {session.user?.name}
+                    </p>
+                    <p className="text-xs sm:text-sm text-gray-600 truncate">
+                      {session.user?.email}
+                    </p>
                   </div>
                   <hr className="my-2" />
-                  <Link
-                    href="/alumnos/editar-perfil"
-                    className="block w-full text-left px-4 py-2 mb-2 text-sm sm:text-base hover:bg-gray-100 text-gray-900 font-medium rounded"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Editar perfil
-                  </Link>
+                  {/* Mostrar "Editar perfil" sólo si es autorizado */}
+                  {esAutorizadoParaContenido && (
+                    <Link
+                      href="/alumnos/editar-perfil"
+                      className="block w-full text-left px-4 py-2 mb-2 text-sm sm:text-base hover:bg-gray-100 text-gray-900 font-medium rounded"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Editar perfil
+                    </Link>
+                  )}
                   <button
                     onClick={() => signOut()}
                     className="w-full text-left px-4 py-2 text-sm sm:text-base hover:bg-gray-100 text-red-600 font-medium rounded"

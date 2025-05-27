@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, Trash2 } from "lucide-react";
 import Link from "next/link";
-import LikeButton from "@/app/components/LikeButton";
 
 interface Publication {
   idPublication: string;
@@ -27,7 +26,8 @@ const isImage = (url: string) => /\.(jpg|jpeg|png|gif|svg)$/i.test(url);
 
 const canDelete = (email?: string) =>
   email?.endsWith("@vedruna.es") ||
-  email?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es";
+  email?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es" ||
+  email?.endsWith("@a.vedrunasevillasj.es");
 
 export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
   const router = useRouter();
@@ -92,7 +92,7 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
           </div>
           <h1 className="text-4xl font-extrabold text-red-700 mb-2">Acceso Denegado</h1>
           <p className="text-gray-700 mb-1">Esta sección es exclusiva para correos institucionales:</p>
-          <p className="text-blue-700 font-semibold mb-4">@a.vedrunasevillasj.es</p>
+          <p className="text-blue-700 font-semibold mb-4">@vedruna.es y @a.vedrunasevillasj.es</p>
           <p className="text-gray-500 text-sm">Redirigiéndote a la página principal...</p>
         </div>
       </div>
@@ -100,12 +100,12 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-6 sm:px-10 lg:px-20">
-      <section className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-extrabold text-blue-900 mb-8 tracking-tight">
+    <main className="min-h-screen bg-gray-50 py-12 px-6 flex justify-center">
+      <section className="w-full max-w-5xl pb-16">
+        <h1 className="text-4xl font-extrabold text-blue-900 mb-8 tracking-tight text-center">
           Área de Alumnos
         </h1>
-        <p className="text-lg text-gray-700 mb-12 max-w-3xl">
+        <p className="text-lg text-gray-700 mb-12 max-w-full text-center">
           Bienvenido, <span className="font-semibold text-blue-800">{nombre}</span>
         </p>
 
@@ -115,16 +115,7 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
           <p className="text-center text-gray-600">No hay publicaciones disponibles.</p>
         )}
 
-        <div
-          className="
-            grid 
-            gap-8
-            grid-cols-1 
-            sm:grid-cols-2 
-            md:grid-cols-3 
-            lg:grid-cols-4
-          "
-        >
+        <div className="flex flex-col space-y-8">
           {publicaciones.map((pub) => {
             let fileContent = null;
             if (pub.image) {
@@ -132,10 +123,10 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
                 <img
                   src={pub.image}
                   alt={pub.title || "Imagen"}
-                  className="w-full h-48 object-cover rounded-t-lg"
+                  className="w-full h-80 object-cover rounded-t-lg shadow-sm"
                 />
               ) : (
-                <div className="w-full h-48 flex items-center justify-center bg-gray-100 p-4 rounded-t-lg">
+                <div className="w-full h-80 flex items-center justify-center bg-gray-100 p-4 rounded-t-lg shadow-sm">
                   <span className="text-gray-500 text-sm">Archivo adjunto</span>
                 </div>
               );
@@ -145,46 +136,34 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
               <Link
                 key={pub.idPublication}
                 href={`/alumnos/publicacion/${pub.idPublication}`}
-                className="group block rounded-xl shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 flex flex-col"
+                className="block rounded-xl shadow-md bg-white hover:shadow-lg transition-shadow duration-300 flex flex-col max-w-full"
               >
                 {fileContent}
                 <article className="p-6 flex flex-col flex-grow justify-between">
                   <header className="mb-4">
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-blue-700 transition">
+                    <h2 className="text-2xl font-semibold text-gray-900 group-hover:text-blue-700 transition">
                       {pub.title}
                     </h2>
                   </header>
-                  <p className="text-gray-700 mb-6 whitespace-pre-wrap line-clamp-5 flex-grow">
+                  <p className="text-gray-700 mb-6 whitespace-pre-wrap line-clamp-7 flex-grow">
                     {pub.description}
                   </p>
                   <footer className="flex justify-between items-center text-sm text-gray-500 mt-auto">
                     <span>
                       Publicado por: <span className="font-medium text-gray-800">{pub.name || "Anónimo"}</span>
                     </span>
-                    <div className="flex items-center space-x-2">
-                      <LikeButton
-                        id={pub.idPublication}
-                        likes={pub.like || []}
-                        userId={email ?? ""}
-                        onLikeToggle={(updatedLikes) => {
-                          setPublicaciones((prev) =>
-                            prev.map((p) =>
-                              p.idPublication === pub.idPublication ? { ...p, like: updatedLikes } : p
-                            )
-                          );
-                        }}
-                      />
+                    <div className="flex items-center space-x-3">
                       {canDelete(email) && (
                         <button
                           onClick={(e) => {
                             e.preventDefault();
                             confirmDelete(pub.idPublication);
                           }}
-                          className="p-1 rounded-full bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 transition"
+                          className="p-2 rounded-full bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 transition"
                           title="Eliminar publicación"
                           disabled={deletingId === pub.idPublication}
                         >
-                          <Trash2 size={18} />
+                          <Trash2 size={20} />
                         </button>
                       )}
                     </div>
@@ -197,35 +176,35 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
       </section>
 
       {modalOpen && (
-      <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-300">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Confirmar eliminación
-          </h2>
-          <p className="text-gray-700 mb-6">
-            ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.
-          </p>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => {
-                setModalOpen(false);
-                setSelectedId(null);
-              }}
-              className="px-5 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold transition"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleDelete}
-              disabled={deletingId !== null}
-              className="px-5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition disabled:opacity-50"
-            >
-              {deletingId ? "Eliminando..." : "Eliminar"}
-            </button>
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full text-center border border-gray-300">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              Confirmar eliminación
+            </h2>
+            <p className="text-gray-700 mb-6">
+              ¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                  setSelectedId(null);
+                }}
+                className="px-5 py-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold transition"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deletingId !== null}
+                className="px-5 py-2 rounded-md bg-red-600 hover:bg-red-700 text-white font-semibold transition disabled:opacity-50"
+              >
+                {deletingId ? "Eliminando..." : "Eliminar"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
     </main>
   );
 }

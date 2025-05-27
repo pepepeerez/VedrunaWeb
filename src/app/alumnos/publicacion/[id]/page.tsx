@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
+import BackButton from "@/app/components/BackButton";
 
 interface Comentario {
   idComentario: string;
@@ -68,7 +68,8 @@ export default function PublicacionPage({ params }: Props) {
 
   const canDeleteComment = (userEmail: string | undefined) =>
     userEmail?.endsWith("@vedruna.es") ||
-    userEmail?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es";
+    userEmail?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es" ||
+    userEmail?.endsWith("@a.vedrunasevillasj.es");
 
   function tiempoRelativo(fechaISO: string): string {
     const ahora = new Date();
@@ -136,29 +137,38 @@ export default function PublicacionPage({ params }: Props) {
     }
   };
 
-  if (status === "loading") return <p>Cargando sesión...</p>;
-  if (!session) return <p>Debes iniciar sesión para ver esta página.</p>;
+  if (status === "loading") return <p className="text-center mt-10">Cargando sesión...</p>;
+  if (!session) return <p className="text-center mt-10">Debes iniciar sesión para ver esta página.</p>;
 
-  if (loading) return <p>Cargando publicación y comentarios...</p>;
-  if (error) return <p className="text-red-600">{error}</p>;
+  if (loading) return <p className="text-center mt-10">Cargando publicación y comentarios...</p>;
+  if (error) return <p className="text-center mt-10 text-red-600">{error}</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 relative">
-      <h1 className="text-3xl font-bold mb-4">{publicacion?.title}</h1>
-      <p className="mb-6 whitespace-pre-wrap">{publicacion?.description}</p>
+    <main className="max-w-4xl mx-auto p-6 space-y-8">
+      {publicacion?.image && (
+        <img
+          src={publicacion.image}
+          alt={publicacion.title}
+          className="w-full max-h-96 object-cover rounded-lg shadow-md"
+        />
+      )}
 
-      <hr className="my-6" />
+      <h1 className="text-3xl font-bold text-gray-900">{publicacion?.title}</h1>
+      <p className="text-gray-700 whitespace-pre-wrap">{publicacion?.description}</p>
 
-      <section>
-        <h2 className="text-xl font-semibold mb-4">Comentarios</h2>
-        {comentarios.length === 0 && <p>No hay comentarios todavía.</p>}
+      <section className="mt-10">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-900">Comentarios</h2>
+        {comentarios.length === 0 && <p className="text-gray-600">No hay comentarios todavía.</p>}
 
-        <ul className="space-y-4">
+        <ul className="space-y-6">
           {comentarios.map((c) => (
-            <li key={c.idComentario} className="border p-3 rounded flex justify-between items-start">
+            <li
+              key={c.idComentario}
+              className="border rounded-lg p-4 shadow-sm flex justify-between items-start"
+            >
               <div>
-                <p className="font-semibold">{c.name || c.email}</p>
-                <p>{c.mensaje}</p>
+                <p className="font-semibold text-gray-900">{c.name || c.email}</p>
+                <p className="text-gray-800">{c.mensaje}</p>
                 <small className="text-gray-500">{tiempoRelativo(c.createdAt)}</small>
               </div>
               {canDeleteComment(email) && (
@@ -167,47 +177,40 @@ export default function PublicacionPage({ params }: Props) {
                     e.preventDefault();
                     confirmDeleteComentario(c.idComentario);
                   }}
-                  className="ml-4 px-2 py-1 text-xs bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 transition-all"
+                  className="ml-4 px-3 py-1.5 text-sm bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 transition"
                   title="Eliminar comentario"
                   disabled={deletingComentario}
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={16} />
                 </button>
               )}
             </li>
           ))}
         </ul>
 
-        <div className="mt-6">
+        <div className="mt-8">
           <textarea
-            className="w-full p-2 border rounded"
+            className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             placeholder="Escribe un comentario..."
             value={nuevoComentario}
             onChange={(e) => setNuevoComentario(e.target.value)}
-            rows={4}
+            rows={5}
           />
-          <div className="mt-4 flex gap-4 justify-end">
+          <div className="mt-4 mb-8 flex justify-between gap-4">
             <button
               onClick={handleSubmit}
-              className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 text-sm"
+              className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Enviar Comentario
             </button>
-
-            <Link
-              href="/alumnos"
-              className="bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 flex items-center justify-center text-sm"
-              aria-label="Volver a Alumnos"
-            >
-              ←
-            </Link>
+            <BackButton />
           </div>
         </div>
       </section>
 
       {comentarioEliminarId && (
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-          <div className="bg-white rounded-xl shadow-2xl p-6 w-[90vw] max-w-sm text-center border border-gray-200">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full text-center border border-gray-200">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Confirmar eliminación</h2>
             <p className="text-gray-600 mb-6">
               ¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.
@@ -231,6 +234,6 @@ export default function PublicacionPage({ params }: Props) {
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

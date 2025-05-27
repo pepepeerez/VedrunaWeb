@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import BackButton from "../components/BackButton";
 
 export default function CrearContenidoPage() {
   const { data: session } = useSession();
@@ -53,7 +54,7 @@ export default function CrearContenidoPage() {
         const errorData = await response.json();
         setMessage(`Error: ${errorData.message || "Algo salió mal"}`);
       }
-    } catch (error) {
+    } catch {
       setMessage("Error al conectar con el servidor.");
     } finally {
       setLoading(false);
@@ -115,7 +116,7 @@ export default function CrearContenidoPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white font-semibold py-3 rounded hover:bg-blue-700 transition ${
+            className={`w-full bg-blue-600 text-white font-semibold py-3 mb-1.5 rounded hover:bg-blue-700 transition ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -124,6 +125,9 @@ export default function CrearContenidoPage() {
           {message && <p className="text-center mt-4 text-red-600">{message}</p>}
         </form>
       )}
+      <button>
+        <BackButton />
+      </button>
     </div>
   );
 }

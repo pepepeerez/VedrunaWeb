@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className="min-h-screen flex flex-col">
-        <ClientLayout>{children}</ClientLayout>  {/* Envolvemos el contenido en el componente de cliente */}
+        <ClientLayout>{children}</ClientLayout> {/* Aquí envuelves todo en el layout cliente */}
       </body>
     </html>
   );

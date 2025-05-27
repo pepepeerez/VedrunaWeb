@@ -6,16 +6,11 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 
-export default function NavbarAlumnos() {
+export default function Navbar() {
   const { data: session } = useSession();
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const userEmail = session?.user?.email || "";
-  const esAutorizadoParaContenido =
-    userEmail.endsWith("@vedruna.es") ||
-    userEmail === "jose.perez@a.vedrunasevillasj.es";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,9 +36,9 @@ export default function NavbarAlumnos() {
   return (
     <nav
       className={clsx(
-        "sticky top-0 z-50 bg-white shadow-md transition-shadow duration-700 ease-in-out"
+        "sticky top-0 z-50 bg-white shadow-md transition-shadow duration-700 ease-in-out",
+        "h-18"
       )}
-      style={{ height: 72 }}
     >
       <div className="max-w-7xl mx-auto px-0 sm:px-0 lg:px-0 flex justify-between items-center h-full">
         {/* Logo pegado a la izquierda con margen negativo para sobresalir */}
@@ -52,7 +47,7 @@ export default function NavbarAlumnos() {
             <div
               className={clsx(
                 "transition-transform duration-700 ease-in-out",
-                isScrolled ? "scale-75" : "scale-90"
+                isScrolled ? "scale-70" : "scale-90"
               )}
               style={{ width: 70, height: 70 }}
             >
@@ -75,9 +70,6 @@ export default function NavbarAlumnos() {
           <Link href="/alumnos" className="hover:text-[#33c4ff] transition-colors duration-300">
             Alumnos
           </Link>
-          <Link href="/alumnos/lista" className="hover:text-[#33c4ff] transition-colors duration-300">
-            Usuarios
-          </Link>
           <Link href="/contacto" className="hover:text-[#33c4ff] transition-colors duration-300">
             Contacto
           </Link>
@@ -87,15 +79,6 @@ export default function NavbarAlumnos() {
         <div className="flex items-center gap-4 relative mr-0" ref={menuRef} style={{ minWidth: profileSize }}>
           {session ? (
             <>
-              {esAutorizadoParaContenido && (
-                <Link
-                  href="/subir-contenido"
-                  className="hidden md:inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition font-semibold mr-4"
-                >
-                  Añadir contenido
-                </Link>
-              )}
-
               {/* Botón menú móvil */}
               <button
                 className="md:hidden p-2 rounded-md hover:bg-gray-200 transition"
@@ -152,13 +135,6 @@ export default function NavbarAlumnos() {
                     <p className="text-xs sm:text-sm text-gray-600 truncate">{session.user?.email}</p>
                   </div>
                   <hr className="my-2" />
-                  <Link
-                    href="/alumnos/editar-perfil"
-                    className="block w-full text-left px-4 py-2 mb-2 text-sm sm:text-base hover:bg-gray-100 text-gray-900 font-medium rounded"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Editar perfil
-                  </Link>
                   <button
                     onClick={() => signOut()}
                     className="w-full text-left px-4 py-2 text-sm sm:text-base hover:bg-gray-100 text-red-600 font-medium rounded"
@@ -191,28 +167,12 @@ export default function NavbarAlumnos() {
               Alumnos
             </Link>
             <Link
-              href="/alumnos/lista"
-              className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition"
-              onClick={() => setMenuOpen(false)}
-            >
-              Usuarios
-            </Link>
-            <Link
               href="/contacto"
               className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition"
               onClick={() => setMenuOpen(false)}
             >
               Contacto
             </Link>
-            {esAutorizadoParaContenido && (
-              <Link
-                href="/subir-contenido"
-                className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                Añadir contenido
-              </Link>
-            )}
           </div>
         </div>
       )}

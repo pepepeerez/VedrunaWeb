@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AlertTriangle } from "lucide-react";
 
 interface UserProfile {
   id: string;
@@ -13,16 +16,26 @@ interface UserProfile {
 }
 
 export default function UsuariosPage() {
-  const [isClient, setIsClient] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [usuarios, setUsuarios] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  // Autorización: solo emails con estos dominios o email exacto
+  const isAuthorized = session?.user?.email
+    ? session.user.email.toLowerCase().endsWith("@vedruna.es") ||
+      session.user.email.toLowerCase().endsWith("@a.vedrunasevillasj.es")
+    : false;
 
   useEffect(() => {
+    if (status === "loading") return; // esperar sesión
+
+    if (!isAuthorized) {
+      setTimeout(() => router.push("/"), 3000);
+      return;
+    }
+
     async function fetchUsuarios() {
       try {
         const res = await fetch("http://localhost:8080/vedruna/user-profile/all");
@@ -36,13 +49,25 @@ export default function UsuariosPage() {
       }
     }
 
-    if (isClient) {
-      fetchUsuarios();
-    }
-  }, [isClient]);
+    fetchUsuarios();
+  }, [isAuthorized, status, router]);
 
-  if (!isClient) {
-    return null; // o un spinner de carga
+  if (status === "loading") return null; // spinner o nada mientras carga sesión
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="bg-white p-10 rounded-2xl shadow-xl text-center max-w-md w-full animate-fade-in">
+          <div className="flex justify-center mb-4 text-yellow-500">
+            <AlertTriangle size={64} strokeWidth={1.5} />
+          </div>
+          <h1 className="text-4xl font-extrabold text-red-700 mb-2">Acceso Denegado</h1>
+          <p className="text-gray-700 mb-1">Esta sección es exclusiva para correos institucionales:</p>
+          <p className="text-blue-700 font-semibold mb-4">@vedruna.es y @a.vedrunasevillasj.es</p>
+          <p className="text-gray-500 text-sm">Redirigiéndote a la página principal...</p>
+        </div>
+      </div>
+    );
   }
 
   if (loading) return <p className="text-center mt-10 text-gray-700">Cargando usuarios...</p>;
