@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import BackButton from "@/app/components/BackButton";
+import LikeButton from "@/app/components/LikeButton";
 
 interface Comentario {
   idComentario: string;
@@ -153,7 +154,20 @@ export default function PublicacionPage({ params }: Props) {
         />
       )}
 
-      <h1 className="text-3xl font-bold text-gray-900">{publicacion?.title}</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900">{publicacion?.title}</h1>
+        <LikeButton
+          id={publicacion!.idPublication}
+          likes={publicacion?.like || []}
+          userId={email}
+          onLikeToggle={(updatedLikes) => {
+            setPublicacion((prev) =>
+              prev ? { ...prev, like: updatedLikes } : prev
+            );
+          }}
+        />
+      </div>
+
       <p className="text-gray-700 whitespace-pre-wrap">{publicacion?.description}</p>
 
       <section className="mt-10">

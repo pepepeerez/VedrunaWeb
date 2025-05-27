@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, Trash2 } from "lucide-react";
 import Link from "next/link";
-
+import LikeButton from "@/app/components/LikeButton";
 
 interface Publication {
   idPublication: string;
@@ -184,6 +184,20 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
                         {comentariosCount[pub.idPublication] ?? 0} comentario
                         {(comentariosCount[pub.idPublication] ?? 0) !== 1 ? "s" : ""}
                       </span>
+
+                      <LikeButton
+                        id={pub.idPublication}
+                        likes={pub.like || []}
+                        userId={email ?? ""}
+                        onLikeToggle={(updatedLikes) => {
+                          setPublicaciones((prev) =>
+                            prev.map((p) =>
+                              p.idPublication === pub.idPublication ? { ...p, like: updatedLikes } : p
+                            )
+                          );
+                        }}
+                      />
+
                       {canDelete(email) && (
                         <button
                           onClick={(e) => {
