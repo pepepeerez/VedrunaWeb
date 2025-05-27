@@ -146,12 +146,27 @@ export default function PublicacionPage({ params }: Props) {
 
   return (
     <main className="max-w-4xl mx-auto p-6 space-y-8">
+      {/* Render archivo o imagen */}
       {publicacion?.image && (
-        <img
-          src={publicacion.image}
-          alt={publicacion.title}
-          className="w-full max-h-96 object-cover rounded-lg shadow-md"
-        />
+        /\.(jpg|jpeg|png|gif|svg)$/i.test(publicacion.image) ? (
+          <img
+            src={publicacion.image}
+            alt={publicacion.title}
+            className="w-full max-h-96 object-cover rounded-lg shadow-md"
+          />
+        ) : (
+          <div className="p-4 border border-gray-300 rounded-lg bg-gray-50 shadow-md">
+            <a
+              href={publicacion.image}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+              download
+            >
+              Descargar archivo adjunto
+            </a>
+          </div>
+        )
       )}
 
       <div className="flex justify-between items-center">
