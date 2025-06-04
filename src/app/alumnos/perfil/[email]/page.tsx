@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import BackButton from "@/app/components/BackButton"; // Ajusta la ruta según tu estructura
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 interface UserProfile {
   id: string;
@@ -19,13 +20,27 @@ interface Props {
   };
 }
 
+function Avatar({ email }: { email: string }) {
+  // Extrae iniciales del email antes de @
+  const initials = email
+    .split("@")[0]
+    .split(".")
+    .map((n) => n[0].toUpperCase())
+    .join("")
+    .slice(0, 2);
+  return (
+    <div className="w-24 h-24 rounded-full bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold shadow-md select-none">
+      {initials}
+    </div>
+  );
+}
+
 export default function PerfilUsuarioPage({ params }: Props) {
   const email = decodeURIComponent(params.email);
 
   const [perfil, setPerfil] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [comentario, setComentario] = useState("");
 
   useEffect(() => {
     async function fetchPerfil() {
@@ -45,74 +60,76 @@ export default function PerfilUsuarioPage({ params }: Props) {
     fetchPerfil();
   }, [email]);
 
-  if (loading) return <p className="text-center mt-10">Cargando perfil...</p>;
-  if (error) return <p className="text-center mt-10 text-red-600">{error}</p>;
+  if (loading)
+    return (
+      <p className="text-center mt-20 text-xl text-gray-500 animate-pulse">
+        Cargando perfil...
+      </p>
+    );
+  if (error)
+    return (
+      <p className="text-center mt-20 text-red-600 font-semibold text-xl">{error}</p>
+    );
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold mb-6 text-center">Perfil de Usuario</h1>
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-        <p className="text-lg font-semibold mb-2">Email:</p>
-        <p className="mb-4 break-all">{perfil?.email}</p>
+    <main className="max-w-3xl mx-auto px-6 py-16 bg-gray-50 min-h-screen">
+      <div className="bg-white rounded-2xl shadow-lg p-10">
+        <div className="flex flex-col items-center mb-8">
+          <Avatar email={perfil!.email} />
+          <h1 className="mt-6 text-4xl font-extrabold text-gray-900">{perfil!.email}</h1>
+          <p className="mt-2 text-indigo-600 font-semibold">{perfil?.curso || "Curso no especificado"}</p>
+        </div>
 
-        <p className="text-lg font-semibold mb-2">Ciclo Formativo:</p>
-        <p className="mb-4">{perfil?.ciclo || "No especificado"}</p>
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
+          <div>
+            <h2 className="text-xl font-semibold border-b border-indigo-300 pb-2 mb-4">
+              Ciclo Formativo
+            </h2>
+            <p className="text-lg">{perfil?.ciclo || "No especificado"}</p>
+          </div>
 
-        <p className="text-lg font-semibold mb-2">Curso:</p>
-        <p className="mb-4">{perfil?.curso || "No especificado"}</p>
+          <div>
+            <h2 className="text-xl font-semibold border-b border-indigo-300 pb-2 mb-4">
+              Descripción
+            </h2>
+            <p className="whitespace-pre-wrap text-lg leading-relaxed">
+              {perfil?.descripcion || "No especificada"}
+            </p>
+          </div>
+        </section>
 
-        <p className="text-lg font-semibold mb-2">Descripción:</p>
-        <p className="mb-4 whitespace-pre-wrap">{perfil?.descripcion || "No especificada"}</p>
+        {(perfil?.githubLink || perfil?.linkedinLink) && (
+          <section className="mt-10 flex justify-center space-x-12">
+            {perfil.githubLink && (
+              <a
+                href={perfil.githubLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 transition-colors"
+              >
+                <FaGithub className="text-2xl" />
+                <span className="text-lg break-all">{perfil.githubLink}</span>
+              </a>
+            )}
 
-        {perfil?.githubLink && (
-          <>
-            <p className="text-lg font-semibold mb-2">GitHub:</p>
-            <a
-              href={perfil.githubLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline break-all"
-            >
-              {perfil.githubLink}
-            </a>
-          </>
+            {perfil.linkedinLink && (
+              <a
+                href={perfil.linkedinLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 transition-colors"
+              >
+                <FaLinkedin className="text-2xl" />
+                <span className="text-lg break-all">{perfil.linkedinLink}</span>
+              </a>
+            )}
+          </section>
         )}
 
-        {perfil?.linkedinLink && (
-          <>
-            <p className="text-lg font-semibold mt-4 mb-2">LinkedIn:</p>
-            <a
-              href={perfil.linkedinLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline break-all"
-            >
-              {perfil.linkedinLink}
-            </a>
-          </>
-        )}
-      </div>
-
-      <section>
-        <h2 className="font-semibold text-lg mb-2">Comentarios</h2>
-        <p className="mb-4">No hay comentarios todavía.</p>
-        <textarea
-          className="w-full border border-gray-400 rounded p-2 mb-4 resize-none"
-          rows={5}
-          placeholder="Escribe un comentario..."
-          value={comentario}
-          onChange={(e) => setComentario(e.target.value)}
-        />
-        <div className="flex gap-2 justify-end">
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            onClick={() => alert("Enviar comentario: " + comentario)} // Lógica envío aquí
-          >
-            Enviar Comentario
-          </button>
+        <div className="mt-12 flex justify-center">
           <BackButton />
         </div>
-      </section>
+      </div>
     </main>
   );
 }

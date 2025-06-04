@@ -75,6 +75,55 @@ export default function HomePage() {
           </ul>
         </section>
 
+        {/* Ciclos Formativos DAM y DAW */}
+<section className="text-center px-4 sm:px-8">
+  <h2 className="text-3xl sm:text-4xl font-bold text-blue-800 mb-10">
+    Nuestros Cursos
+  </h2>
+  
+  <div className="grid gap-10 sm:gap-14 grid-cols-1 md:grid-cols-2 justify-items-center">
+    
+      {/* DAM */}
+      <Link
+        href="/ciclos/dam"
+        className="group relative w-60 h-60 sm:w-72 sm:h-72 rounded-full overflow-hidden shadow-lg transform transition duration-300 hover:scale-105"
+      >
+        <Image
+          src="/dam.png"
+          alt="Desarrollo de Aplicaciones Multiplataforma"
+          fill
+          className="object-cover group-hover:opacity-50 transition duration-300"
+        />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
+          <p className="text-sm sm:text-base font-semibold">Técnico Superior</p>
+          <h3 className="text-base sm:text-lg font-bold leading-tight">
+            DESARROLLO DE APLICACIONES MULTIPLATAFORMA
+          </h3>
+        </div>
+      </Link>
+
+        {/* DAW */}
+        <Link
+          href="/ciclos/daw"
+          className="group relative w-60 h-60 sm:w-72 sm:h-72 rounded-full overflow-hidden shadow-lg transform transition duration-300 hover:scale-105"
+        >
+          <Image
+            src="/daw.png"
+            alt="Desarrollo de Aplicaciones Web"
+            fill
+            className="object-cover group-hover:opacity-50 transition duration-300"
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
+            <p className="text-sm sm:text-base font-semibold">Técnico Superior</p>
+            <h3 className="text-base sm:text-lg font-bold leading-tight">
+              DESARROLLO DE APLICACIONES WEB
+            </h3>
+          </div>
+        </Link>
+        
+      </div>
+    </section>
+
         {/* ¿Por qué elegirnos? */}
         <section className="bg-blue-100 rounded-xl p-8 text-blue-900">
           <h2 className="text-3xl font-semibold mb-6 border-b border-blue-400 pb-2">

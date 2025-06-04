@@ -47,7 +47,6 @@ export default function CrearContenidoPage() {
         setTitle("");
         setDescription("");
         setFile(null);
-        // Limpia el input file también
         (document.getElementById("file") as HTMLInputElement).value = "";
         setTimeout(() => setMessage(""), 3000);
       } else {
@@ -62,10 +61,11 @@ export default function CrearContenidoPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white rounded shadow-md mt-8">
-      <h1 className="text-4xl font-bold mb-6 text-center text-blue-600">
+    <div className="max-w-3xl mx-auto p-6 sm:p-8 bg-white rounded-xl shadow-md mt-8">
+      <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-blue-600">
         Subir contenido
       </h1>
+
       {!session ? (
         <p className="text-red-500 text-center">Debes iniciar sesión para publicar.</p>
       ) : (
@@ -101,33 +101,43 @@ export default function CrearContenidoPage() {
           </div>
 
           <div>
-            <label className="block font-semibold mb-2" htmlFor="file">
+            <label htmlFor="file" className="block font-semibold mb-2">
               Archivo (imagen, PDF, Word, etc.)
             </label>
-            <input
-              id="file"
-              type="file"
-              className="w-full"
-              accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.txt"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
-            />
+            <div className="border-2 border-dashed border-blue-400 rounded-xl p-6 bg-blue-50 text-center hover:bg-blue-100 transition cursor-pointer">
+              <input
+                id="file"
+                type="file"
+                className="hidden"
+                accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.txt"
+                onChange={(e) => setFile(e.target.files?.[0] || null)}
+              />
+              <label
+                htmlFor="file"
+                className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition"
+              >
+                Seleccionar archivo
+              </label>
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 text-white font-semibold py-3 mb-1.5 rounded hover:bg-blue-700 transition ${
+            className={`w-full bg-blue-600 text-white font-semibold py-3 rounded hover:bg-blue-700 transition ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
             {loading ? "Publicando..." : "Publicar"}
           </button>
+
           {message && <p className="text-center mt-4 text-red-600">{message}</p>}
         </form>
       )}
-      <button>
+
+      <div className="mt-6">
         <BackButton />
-      </button>
+      </div>
     </div>
   );
 }
