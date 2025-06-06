@@ -9,7 +9,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const pathname = usePathname();
 
   // Ocultar navbar global en rutas que empiezan por /alumnos
-  const hideNav = pathname.startsWith("/alumnos");
+  const hideNav = pathname.startsWith("/alumnos") || pathname.startsWith("/subir-contenido");
   const hideFooter = false; // Puedes ajustar según necesidades
 
   return (

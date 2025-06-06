@@ -23,7 +23,7 @@ interface Props {
   email?: string;
 }
 
-const isImage = (url: string) => /\.(jpg|jpeg|png|gif|svg)$/i.test(url);
+const isImage = (url: string) => /\.(jpg|jpeg|png|gif|svg)$/i.test(url); // Solo permitir imágenes
 
 const canDelete = (email?: string) =>
   email?.endsWith("@vedruna.es") ||
@@ -51,12 +51,15 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
         const res = await fetch("http://localhost:8080/vedruna/publications");
         if (!res.ok) throw new Error();
         const data = await res.json();
-        setPublicaciones(data);
+
+        // Filtrar solo publicaciones que contienen imágenes
+        const imagePublications = data.filter((pub: Publication) => pub.image && isImage(pub.image));
+        setPublicaciones(imagePublications);
 
         // Cargar conteo de comentarios para cada publicación
         const counts: Record<string, number> = {};
         await Promise.all(
-          data.map(async (pub: Publication) => {
+          imagePublications.map(async (pub: Publication) => {
             try {
               const countRes = await fetch(`http://localhost:8080/vedruna/comentarios/count/${pub.idPublication}`);
               if (!countRes.ok) throw new Error();
@@ -68,7 +71,6 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
           })
         );
         setComentariosCount(counts);
-
       } catch {
         setError("No se pudieron cargar las publicaciones.");
       } finally {
@@ -100,7 +102,6 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
         delete updated[selectedId];
         return updated;
       });
-
     } catch {
       alert("No se pudo eliminar la publicación.");
     } finally {
@@ -112,7 +113,7 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
 
   if (!isAutorizado) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="bg-white p-10 rounded-2xl shadow-xl text-center max-w-md w-full animate-fade-in">
           <div className="flex justify-center mb-4 text-yellow-500">
             <AlertTriangle size={64} strokeWidth={1.5} />
@@ -127,9 +128,9 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-6 flex justify-center">
+    <main className="min-h-screen bg-white py-12 px-6 flex justify-center">
       <section className="w-full max-w-5xl pb-20">
-        <h1 className="text-4xl font-extrabold text-blue-900 mb-8 tracking-tight text-center">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-blue-900 mb-8 tracking-tight text-center">
           Área de Alumnos
         </h1>
         <p className="text-lg text-gray-700 mb-12 max-w-full text-center">
@@ -144,28 +145,17 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
 
         <div className="flex flex-col space-y-8">
           {publicaciones.map((pub) => {
-            let fileContent = null;
-            if (pub.image) {
-              fileContent = isImage(pub.image) ? (
-                <img
-                  src={pub.image}
-                  alt={pub.title || "Imagen"}
-                  className="w-full h-80 object-cover rounded-t-lg shadow-sm"
-                />
-              ) : (
-                <div className="w-full h-80 flex items-center justify-center bg-gray-100 p-4 rounded-t-lg shadow-sm">
-                  <span className="text-gray-500 text-sm">Archivo adjunto</span>
-                </div>
-              );
-            }
-
             return (
               <Link
                 key={pub.idPublication}
                 href={`/alumnos/publicacion/${pub.idPublication}`}
                 className="block rounded-xl shadow-md bg-white hover:shadow-lg transition-shadow duration-300 flex flex-col max-w-full"
               >
-                {fileContent}
+                <img
+                  src={pub.image}
+                  alt={pub.title || "Imagen"}
+                  className="w-full max-h-80 object-contain rounded-t-lg shadow-sm" // Limitar la altura máxima de la imagen
+                />
                 <article className="p-6 flex flex-col flex-grow justify-between">
                   <header className="mb-4">
                     <h2 className="text-2xl font-semibold text-gray-900 group-hover:text-blue-700 transition">

@@ -9,20 +9,23 @@ export default function CrearContenidoPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null); // Solo un archivo
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [fileMessage, setFileMessage] = useState<string | null>(null); // Mensaje de archivo cargado
+  const [previewImage, setPreviewImage] = useState<string | null>(null); // Para mostrar la vista previa
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validación para título, descripción y archivo
     if (!title || !description) {
       setMessage("Por favor completa el título y la descripción.");
       return;
     }
 
     if (!file) {
-      setMessage("Debes seleccionar un archivo.");
+      setMessage("Debes seleccionar una imagen.");
       return;
     }
 
@@ -34,7 +37,7 @@ export default function CrearContenidoPage() {
     formData.append("description", description);
     formData.append("email", session?.user?.email || "");
     formData.append("name", session?.user?.name || "");
-    formData.append("file", file);
+    formData.append("file", file); // Solo un archivo
 
     try {
       const response = await fetch("http://localhost:8080/vedruna/publications", {
@@ -47,7 +50,9 @@ export default function CrearContenidoPage() {
         setTitle("");
         setDescription("");
         setFile(null);
-        (document.getElementById("file") as HTMLInputElement).value = "";
+        setFileMessage(null); // Limpiar el mensaje de archivo cargado
+        setPreviewImage(null); // Limpiar la vista previa
+        (document.getElementById("file") as HTMLInputElement).value = ""; // Limpiar el campo de archivo
         setTimeout(() => setMessage(""), 3000);
       } else {
         const errorData = await response.json();
@@ -57,6 +62,17 @@ export default function CrearContenidoPage() {
       setMessage("Error al conectar con el servidor.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Función para manejar el cambio de archivo (imagen)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+
+      setFile(selectedFile); // Guardar el archivo seleccionado
+      setFileMessage(`Archivo cargado: ${selectedFile.name}`); // Mostrar el nombre del archivo
+      setPreviewImage(URL.createObjectURL(selectedFile)); // Generar vista previa
     }
   };
 
@@ -102,24 +118,39 @@ export default function CrearContenidoPage() {
 
           <div>
             <label htmlFor="file" className="block font-semibold mb-2">
-              Archivo (imagen, PDF, Word, etc.)
+              Imagen (solo .jpg o .jpeg) <span className="text-red-600">*</span>
             </label>
-            <div className="border-2 border-dashed border-blue-400 rounded-xl p-6 bg-blue-50 text-center hover:bg-blue-100 transition cursor-pointer">
+            <div className="border-2 border-dashed border-black rounded-xl p-6 bg-blue-50 text-center hover:bg-blue-100 transition cursor-pointer">
               <input
                 id="file"
                 type="file"
                 className="hidden"
-                accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.txt"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                accept=".jpg,.jpeg"
+                onChange={handleFileChange}
               />
               <label
                 htmlFor="file"
-                className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition"
+                className="inline-block mt-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-900 transition"
               >
-                Seleccionar archivo
+                Seleccionar imagen
               </label>
             </div>
           </div>
+
+          {/* Mostrar el mensaje cuando el archivo es cargado */}
+          {fileMessage && <p className="mt-2 text-gray-600">{fileMessage}</p>}
+
+          {/* Mostrar la vista previa si es una imagen */}
+          {previewImage && (
+            <div className="mt-4">
+              <h3 className="text-center text-xl font-semibold">Vista previa de la imagen:</h3>
+              <img
+                src={previewImage}
+                alt="Vista previa"
+                className="w-full max-h-80 object-contain mt-2"
+              />
+            </div>
+          )}
 
           <button
             type="submit"

@@ -140,7 +140,6 @@ export default function PublicacionPage({ params }: Props) {
 
   if (status === "loading") return <p className="text-center mt-10">Cargando sesión...</p>;
   if (!session) return <p className="text-center mt-10">Debes iniciar sesión para ver esta página.</p>;
-
   if (loading) return <p className="text-center mt-10">Cargando publicación y comentarios...</p>;
   if (error) return <p className="text-center mt-10 text-red-600">{error}</p>;
 
@@ -149,23 +148,14 @@ export default function PublicacionPage({ params }: Props) {
       {/* Render archivo o imagen */}
       {publicacion?.image && (
         /\.(jpg|jpeg|png|gif|svg)$/i.test(publicacion.image) ? (
+          // Si es una imagen, mostrarla
           <img
             src={publicacion.image}
             alt={publicacion.title}
             className="w-full max-h-96 object-cover rounded-lg shadow-md"
           />
         ) : (
-          <div className="p-4 border border-gray-300 rounded-lg bg-gray-50 shadow-md">
-            <a
-              href={publicacion.image}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-              download
-            >
-              Descargar archivo adjunto
-            </a>
-          </div>
+          <div>Este tipo de archivo no es soportado para previsualización.</div>
         )
       )}
 
