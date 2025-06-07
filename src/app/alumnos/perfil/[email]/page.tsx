@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import BackButton from "@/app/components/BackButton"; // Ajusta la ruta según tu estructura
+import { useParams } from "next/navigation";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
+import BackButton from "@/app/components/BackButton"; // Ajusta la ruta según tu estructura
 
 const BASE_URL = "https://vedrunaweb-backend.onrender.com";
 
@@ -17,14 +18,8 @@ interface UserProfile {
   linkedinLink?: string;
 }
 
-interface Props {
-  params: {
-    email: string;
-  };
-}
-
-export default function PerfilUsuarioPage({ params }: Props) {
-  const email = decodeURIComponent(params.email);
+export default function PerfilUsuarioPage() {
+  const { email } = useParams(); // Obtener el parámetro 'email' desde los params de la ruta
 
   const [perfil, setPerfil] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,7 +59,7 @@ export default function PerfilUsuarioPage({ params }: Props) {
       <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-10">
         <div className="flex flex-col items-center mb-8">
           <h1 className="mt-6 text-4xl sm:text-5xl font-extrabold text-gray-900">
-            {perfil?.nombreCompleto || perfil?.email} {/* Muestra el correo si no hay nombre completo */}
+            {perfil?.nombreCompleto || perfil?.email}
           </h1>
           <p className="mt-6 text-xl sm:text-2xl text-indigo-600 font-semibold">
             Curso: {perfil?.curso || "Curso no especificado"}
@@ -99,7 +94,7 @@ export default function PerfilUsuarioPage({ params }: Props) {
               className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 transition-colors"
             >
               <FaGithub className="text-2xl" />
-              <span className="text-lg">GitHub</span> {/* Texto en lugar del enlace completo */}
+              <span className="text-lg">GitHub</span>
             </a>
           )}
 
@@ -111,7 +106,7 @@ export default function PerfilUsuarioPage({ params }: Props) {
               className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 transition-colors"
             >
               <FaLinkedin className="text-2xl" />
-              <span className="text-lg">LinkedIn</span> {/* Texto en lugar del enlace completo */}
+              <span className="text-lg">LinkedIn</span>
             </a>
           )}
         </section>
