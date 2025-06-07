@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import BackButton from "@/app/components/BackButton";
 import LikeButton from "@/app/components/LikeButton";
+import { useParams } from "next/navigation"; // Añadir useParams
 
 const BASE_URL = "https://vedrunaweb-backend.onrender.com";
 
@@ -28,17 +29,13 @@ interface Publication {
   like?: string[];
 }
 
-interface Props {
-  params: { id: string };
-}
-
-export default function PublicacionPage({ params }: Props) {
+export default function PublicacionPage() {
   const { data: session, status } = useSession();
+  const { id } = useParams(); // Obtener el parámetro 'id' desde la URL
 
   const nombre = session?.user?.name ?? "Anónimo";
   const email = session?.user?.email ?? "email@default.com";
 
-  const { id } = params;
   const [publicacion, setPublicacion] = useState<Publication | null>(null);
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
   const [nuevoComentario, setNuevoComentario] = useState("");
@@ -257,4 +254,4 @@ export default function PublicacionPage({ params }: Props) {
       )}
     </main>
   );
-}
+} 
