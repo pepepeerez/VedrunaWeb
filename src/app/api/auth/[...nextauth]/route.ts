@@ -2,8 +2,8 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 
-// Definimos la configuración para NextAuth
-const authOptions: NextAuthOptions = {
+// Configuración de NextAuth
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -12,8 +12,7 @@ const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn() {
-      // Permite iniciar sesión a cualquier correo
-      return true;
+      return true; // Permite cualquier correo para iniciar sesión
     },
     async session({ session }) {
       return session;
@@ -21,7 +20,7 @@ const authOptions: NextAuthOptions = {
   },
 };
 
-// Handler de NextAuth para manejar las solicitudes GET y POST
+// Manejador para las solicitudes GET y POST
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
