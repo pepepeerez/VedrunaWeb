@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+const BASE_URL = "https://vedrunaweb-backend.onrender.com";
+
 export default function Contacto() {
   const [form, setForm] = useState({ nombre: "", email: "", mensaje: "" });
   const [enviado, setEnviado] = useState(false);
@@ -42,7 +44,7 @@ export default function Contacto() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/vedruna/contacto/enviar", {
+      const res = await fetch(`${BASE_URL}/vedruna/contacto/enviar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),

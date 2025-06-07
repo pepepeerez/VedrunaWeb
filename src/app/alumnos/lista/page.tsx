@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle } from "lucide-react";
 
+const BASE_URL = "https://vedrunaweb-backend.onrender.com";
+
 interface UserProfile {
   id: string;
   email: string;
@@ -38,7 +40,7 @@ export default function UsuariosPage() {
 
     async function fetchUsuarios() {
       try {
-        const res = await fetch("http://localhost:8080/vedruna/user-profile/all");
+        const res = await fetch(`${BASE_URL}/vedruna/user-profile/all`);
         if (!res.ok) throw new Error("Error cargando usuarios");
         const data = await res.json();
         setUsuarios(data);

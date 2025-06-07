@@ -6,6 +6,8 @@ import { AlertTriangle, Trash2 } from "lucide-react";
 import Link from "next/link";
 import LikeButton from "@/app/components/LikeButton";
 
+const BASE_URL = "https://vedrunaweb-backend.onrender.com";
+
 interface Publication {
   idPublication: string;
   email: string;
@@ -48,7 +50,7 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
 
     async function fetchPublicaciones() {
       try {
-        const res = await fetch("http://localhost:8080/vedruna/publications");
+        const res = await fetch(`${BASE_URL}/vedruna/publications`);
         if (!res.ok) throw new Error();
         const data = await res.json();
 
@@ -61,7 +63,7 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
         await Promise.all(
           imagePublications.map(async (pub: Publication) => {
             try {
-              const countRes = await fetch(`http://localhost:8080/vedruna/comentarios/count/${pub.idPublication}`);
+              const countRes = await fetch(`${BASE_URL}/vedruna/comentarios/count/${pub.idPublication}`);
               if (!countRes.ok) throw new Error();
               const count = await countRes.json();
               counts[pub.idPublication] = count;
@@ -90,7 +92,7 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
     if (!selectedId) return;
     setDeletingId(selectedId);
     try {
-      const res = await fetch(`http://localhost:8080/vedruna/publications/${selectedId}`, {
+      const res = await fetch(`${BASE_URL}/vedruna/publications/${selectedId}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error();

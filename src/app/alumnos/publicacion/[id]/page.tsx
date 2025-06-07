@@ -6,6 +6,8 @@ import { Trash2 } from "lucide-react";
 import BackButton from "@/app/components/BackButton";
 import LikeButton from "@/app/components/LikeButton";
 
+const BASE_URL = "https://vedrunaweb-backend.onrender.com";
+
 interface Comentario {
   idComentario: string;
   idPublication: string;
@@ -48,12 +50,12 @@ export default function PublicacionPage({ params }: Props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const resPub = await fetch(`http://localhost:8080/vedruna/publications/${id}`);
+        const resPub = await fetch(`${BASE_URL}/vedruna/publications/${id}`);
         if (!resPub.ok) throw new Error("Error al cargar publicación");
         const pubData = await resPub.json();
         setPublicacion(pubData);
 
-        const resCom = await fetch(`http://localhost:8080/vedruna/comentarios/${id}`);
+        const resCom = await fetch(`${BASE_URL}/vedruna/comentarios/${id}`);
         if (!resCom.ok) throw new Error("Error al cargar comentarios");
         const comData = await resCom.json();
         setComentarios(comData);
@@ -99,7 +101,7 @@ export default function PublicacionPage({ params }: Props) {
         mensaje: nuevoComentario,
       };
 
-      const res = await fetch("http://localhost:8080/vedruna/comentarios", {
+      const res = await fetch(`${BASE_URL}/vedruna/comentarios`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -124,7 +126,7 @@ export default function PublicacionPage({ params }: Props) {
     if (!comentarioEliminarId) return;
     setDeletingComentario(true);
     try {
-      const res = await fetch(`http://localhost:8080/vedruna/comentarios/${comentarioEliminarId}`, {
+      const res = await fetch(`${BASE_URL}/vedruna/comentarios/${comentarioEliminarId}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Error al eliminar comentario");

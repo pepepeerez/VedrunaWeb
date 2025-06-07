@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import BackButton from "@/app/components/BackButton"; // Ajusta la ruta según tu estructura
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
+const BASE_URL = "https://vedrunaweb-backend.onrender.com";
+
 interface UserProfile {
   id: string;
   email: string;
@@ -31,7 +33,7 @@ export default function PerfilUsuarioPage({ params }: Props) {
   useEffect(() => {
     async function fetchPerfil() {
       try {
-        const res = await fetch(`http://localhost:8080/vedruna/user-profile/${email}`);
+        const res = await fetch(`${BASE_URL}/vedruna/user-profile/${email}`);
         if (!res.ok) {
           throw new Error("Perfil no encontrado");
         }

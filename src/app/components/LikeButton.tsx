@@ -4,6 +4,8 @@
 import { useState } from "react";
 import { Heart } from "lucide-react";
 
+const BASE_URL = "https://vedrunaweb-backend.onrender.com";
+
 interface Props {
   id: string; // id publicación
   likes: string[]; // array de userIds que dieron like
@@ -18,7 +20,7 @@ export default function LikeButton({ id, likes, userId, onLikeToggle }: Props) {
   const toggleLike = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/vedruna/publications/like/${id}/${userId}`, {
+      const res = await fetch(`${BASE_URL}/vedruna/publications/like/${id}/${userId}`, {
         method: "PUT",
       });
       if (!res.ok) throw new Error();

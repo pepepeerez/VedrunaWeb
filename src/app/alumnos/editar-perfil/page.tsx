@@ -3,6 +3,8 @@
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 
+const BASE_URL = "https://vedrunaweb-backend.onrender.com";
+
 export default function EditarPerfilPage() {
   const { data: session } = useSession();
   const email = session?.user?.email ?? "";
@@ -21,7 +23,7 @@ export default function EditarPerfilPage() {
 
     async function fetchPerfil() {
       try {
-        const res = await fetch(`http://localhost:8080/vedruna/user-profile/${encodeURIComponent(email)}`);
+        const res = await fetch(`${BASE_URL}/vedruna/user-profile/${encodeURIComponent(email)}`);
         if (!res.ok) throw new Error("Error al cargar perfil");
         const data = await res.json();
 
@@ -66,7 +68,7 @@ export default function EditarPerfilPage() {
         linkedinLink: linkedin,
       };
 
-      const res = await fetch("http://localhost:8080/vedruna/user-profile", {
+      const res = await fetch(`${BASE_URL}/vedruna/user-profile`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

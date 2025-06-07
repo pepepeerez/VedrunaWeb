@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import BackButton from "../components/BackButton";
 
+const BASE_URL = "https://vedrunaweb-backend.onrender.com";
+
 export default function CrearContenidoPage() {
   const { data: session } = useSession();
 
@@ -40,7 +42,7 @@ export default function CrearContenidoPage() {
     formData.append("file", file); // Solo un archivo
 
     try {
-      const response = await fetch("http://localhost:8080/vedruna/publications", {
+      const response = await fetch(`${BASE_URL}/vedruna/publications`, {
         method: "POST",
         body: formData,
       });

@@ -8,9 +8,9 @@ import Footer from "@/app/components/Footer";
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Ocultar navbar global en rutas que empiezan por /alumnos
+  // Ocultar navbar global
   const hideNav = pathname.startsWith("/alumnos") || pathname.startsWith("/subir-contenido");
-  const hideFooter = false; // Puedes ajustar según necesidades
+  const hideFooter = false; 
 
   return (
     <SessionProvider>
