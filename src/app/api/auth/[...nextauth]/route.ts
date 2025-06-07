@@ -11,7 +11,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn() {
-      // Permite iniciar sesión a cualquier correo
       return true;
     },
     async session({ session }) {
@@ -22,4 +21,4 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST };  // Importante, estas exportaciones son necesarias
