@@ -2,7 +2,8 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 
-export const authOptions: NextAuthOptions = {
+// Configuración de NextAuth
+const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -11,7 +12,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn() {
-      // Permite iniciar sesión a cualquier correo
       return true;
     },
     async session({ session }) {
@@ -20,5 +20,7 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
+// Manejador de las rutas API
 const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };
