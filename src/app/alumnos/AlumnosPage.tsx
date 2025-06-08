@@ -139,19 +139,19 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
           <p className="text-center text-gray-600">No hay publicaciones disponibles.</p>
         )}
 
-        <div className="grid gap-8 grid-cols-1 sm:grid-cols-2">
+        <div className="flex flex-col gap-8">
           {publicaciones.map((pub) => (
             <Link
               key={pub.idPublication}
               href={`/alumnos/publicacion/${pub.idPublication}`}
-              className="block rounded-xl shadow-md bg-white hover:shadow-lg transition-shadow duration-300 flex flex-col"
+              className="block rounded-xl shadow-md bg-white hover:shadow-lg transition-shadow duration-300"
             >
               <img
                 src={pub.image}
                 alt={pub.title || "Imagen"}
-                className="w-full object-cover rounded-t-xl max-h-60 sm:max-h-72"
+                className="w-full object-cover rounded-t-xl max-h-60"
               />
-              <article className="p-5 flex flex-col flex-grow justify-between">
+              <article className="p-5 flex flex-col justify-between">
                 <header className="mb-3">
                   <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 group-hover:text-blue-700 transition">
                     {pub.title}
