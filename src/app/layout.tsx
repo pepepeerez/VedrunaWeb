@@ -3,8 +3,8 @@ import type { Metadata } from 'next';
 import ClientLayout from './ClientLayout';
 
 export const metadata: Metadata = {
-  title: 'Mi Página Web',
-  description: 'Una página de ejemplo con Next.js',
+  title: 'VedrunaWeb',
+  description: 'Página web del ciclo formativo de DAM y DAW del insituto Santa Joaquina de Vedruna',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
