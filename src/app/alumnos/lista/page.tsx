@@ -77,7 +77,7 @@ export default function UsuariosPage() {
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-10">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-900">Usuarios Logueados</h1>
+      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-900">Perfiles de Usuarios</h1>
       <ul className="flex flex-col items-center space-y-4 border border-gray-300 rounded-lg p-6 bg-white shadow-md">
         {usuarios.map((usuario) => (
           <li key={usuario.id} className="w-full">
