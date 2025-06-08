@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,15 +10,15 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn() {
-      // Permite iniciar sesión a cualquier correo
+    async signIn({ account, profile }) {
       return true;
     },
-    async session({ session }) {
+    async session({ session, token }) {
       return session;
     },
   },
 };
 
+// Next.js App Router handler
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
