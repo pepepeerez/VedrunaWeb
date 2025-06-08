@@ -29,8 +29,7 @@ const isImage = (url: string) => /\.(jpg|jpeg|png|gif|svg)$/i.test(url); // Solo
 
 const canDelete = (email?: string) =>
   email?.endsWith("@vedruna.es") ||
-  email?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es" ||
-  email?.endsWith("@a.vedrunasevillasj.es");
+  email?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es";
 
 export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
   const router = useRouter();
