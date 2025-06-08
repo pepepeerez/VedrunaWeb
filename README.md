@@ -92,7 +92,7 @@
 
 ## 🎨 Interfaz (Figma)
 
-🎨 [Ver prototipo en Figma](https://www.figma.com/file/xxx) *(reemplaza por tu enlace si tienes uno)*
+🎨 [Ver interfaz en Figma](https://www.figma.com/design/akabkOLGebOoSQhLymOlrn/Untitled?node-id=0-1&m=dev&t=iV7t4XzOS9vxfY1O-1)
 
 ---
 
