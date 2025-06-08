@@ -68,8 +68,7 @@ export default function PublicacionPage() {
 
   const canDeleteComment = (userEmail: string | undefined) =>
     userEmail?.endsWith("@vedruna.es") ||
-    userEmail?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es" ||
-    userEmail?.endsWith("@a.vedrunasevillasj.es");
+    userEmail?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es";
 
   function tiempoRelativo(fechaISO: string): string {
     const ahora = new Date();

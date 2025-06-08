@@ -12,11 +12,6 @@ export default function NavbarAlumnos() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const userEmail = session?.user?.email || "";
-  const esAutorizadoParaContenido =
-    userEmail.endsWith("@vedruna.es") ||
-    userEmail === "jose.perez@a.vedrunasevillasj.es";
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -46,7 +41,6 @@ export default function NavbarAlumnos() {
       style={{ height: 72 }}
     >
       <div className="max-w-7xl mx-auto px-0 sm:px-0 lg:px-0 flex justify-between items-center h-full">
-        {/* Logo pegado a la izquierda con margen negativo para sobresalir */}
         <div className="ml-[-10px] flex items-center gap-3 h-full">
           <Link href="/" className="flex items-center gap-3 h-full">
             <div
@@ -76,81 +70,34 @@ export default function NavbarAlumnos() {
           </Link>
         </div>
 
-        {/* Menú centrado */}
         <div className="hidden md:flex justify-center items-center gap-8 font-medium text-gray-900 text-lg flex-grow">
-          <Link
-            href="/alumnos"
-            className="hover:text-[#33c4ff] transition-colors duration-300"
-          >
-            Alumnos
-          </Link>
-          <Link
-            href="/alumnos/lista"
-            className="hover:text-[#33c4ff] transition-colors duration-300"
-          >
-            Usuarios
-          </Link>
-          <Link
-            href="/contacto"
-            className="hover:text-[#33c4ff] transition-colors duration-300"
-          >
-            Contacto
-          </Link>
+          <Link href="/alumnos" className="hover:text-[#33c4ff] transition-colors duration-300">Alumnos</Link>
+          <Link href="/alumnos/lista" className="hover:text-[#33c4ff] transition-colors duration-300">Usuarios</Link>
+          <Link href="/contacto" className="hover:text-[#33c4ff] transition-colors duration-300">Contacto</Link>
         </div>
 
-        {/* Foto perfil pegada a la derecha sin margen */}
-        <div
-          className="flex items-center gap-4 relative mr-0"
-          ref={menuRef}
-          style={{ minWidth: profileSize }}
-        >
+        <div className="flex items-center gap-4 relative mr-0" ref={menuRef} style={{ minWidth: profileSize }}>
           {session ? (
             <>
-              {/* Mostrar "Añadir contenido" sólo si es autorizado */}
-              {esAutorizadoParaContenido && (
-                <Link
-                  href="/subir-contenido"
-                  className="hidden md:inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition font-semibold mr-4"
-                >
-                  Añadir contenido
-                </Link>
-              )}
+              <Link
+                href="/subir-contenido"
+                className="hidden md:inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition font-semibold mr-4"
+              >
+                Añadir contenido
+              </Link>
 
-              {/* Botón menú móvil */}
               <button
                 className="md:hidden p-2 rounded-md hover:bg-gray-200 transition"
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label="Toggle menu"
               >
                 {menuOpen ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-gray-900"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 text-gray-900"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 )}
               </button>
@@ -158,11 +105,7 @@ export default function NavbarAlumnos() {
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="hidden md:block focus:outline-none transition-transform duration-700 ease-in-out"
-                style={{
-                  width: profileSize,
-                  height: profileSize,
-                  transform: isScrolled ? "scale(0.75)" : "scale(1)",
-                }}
+                style={{ width: profileSize, height: profileSize, transform: isScrolled ? "scale(0.75)" : "scale(1)" }}
               >
                 <Image
                   src={session.user?.image || "/default-avatar.png"}
@@ -174,28 +117,19 @@ export default function NavbarAlumnos() {
               </button>
 
               {menuOpen && (
-                <div
-                  className="absolute right-0 top-full mt-2 w-72 bg-white text-black rounded shadow-lg overflow-hidden z-50 p-4"
-                >
+                <div className="absolute right-0 top-full mt-2 w-72 bg-white text-black rounded shadow-lg overflow-hidden z-50 p-4">
                   <div className="mb-2 truncate">
-                    <p className="font-semibold text-base sm:text-lg">
-                      {session.user?.name}
-                    </p>
-                    <p className="text-xs sm:text-sm text-gray-600 truncate">
-                      {session.user?.email}
-                    </p>
+                    <p className="font-semibold text-base sm:text-lg">{session.user?.name}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 truncate">{session.user?.email}</p>
                   </div>
                   <hr className="my-2" />
-                  {/* Mostrar "Editar perfil" sólo si es autorizado */}
-                  {esAutorizadoParaContenido && (
-                    <Link
-                      href="/alumnos/editar-perfil"
-                      className="block w-full text-left px-4 py-2 mb-2 text-sm sm:text-base hover:bg-gray-100 text-gray-900 font-medium rounded"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      Editar perfil
-                    </Link>
-                  )}
+                  <Link
+                    href="/alumnos/editar-perfil"
+                    className="block w-full text-left px-4 py-2 mb-2 text-sm sm:text-base hover:bg-gray-100 text-gray-900 font-medium rounded"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Editar perfil
+                  </Link>
                   <button
                     onClick={() => signOut()}
                     className="w-full text-left px-4 py-2 text-sm sm:text-base hover:bg-gray-100 text-red-600 font-medium rounded"
@@ -216,40 +150,13 @@ export default function NavbarAlumnos() {
         </div>
       </div>
 
-      {/* Menú móvil desplegable */}
       {menuOpen && (
         <div className="md:hidden bg-white shadow-md border-t border-gray-200">
           <div className="px-4 pt-2 pb-4 space-y-1 font-medium text-gray-900">
-            <Link
-              href="/alumnos"
-              className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition"
-              onClick={() => setMenuOpen(false)}
-            >
-              Alumnos
-            </Link>
-            <Link
-              href="/alumnos/lista"
-              className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition"
-              onClick={() => setMenuOpen(false)}
-            >
-              Usuarios
-            </Link>
-            <Link
-              href="/contacto"
-              className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition"
-              onClick={() => setMenuOpen(false)}
-            >
-              Contacto
-            </Link>
-            {esAutorizadoParaContenido && (
-              <Link
-                href="/subir-contenido"
-                className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition"
-                onClick={() => setMenuOpen(false)}
-              >
-                Añadir contenido
-              </Link>
-            )}
+            <Link href="/alumnos" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Alumnos</Link>
+            <Link href="/alumnos/lista" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Usuarios</Link>
+            <Link href="/contacto" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Contacto</Link>
+            <Link href="/subir-contenido" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Añadir contenido</Link>
           </div>
         </div>
       )}
