@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import BackButton from "@/app/components/BackButton";
 import LikeButton from "@/app/components/LikeButton";
-import { useParams } from "next/navigation"; // Añadir useParams
+import { useParams } from "next/navigation";
 
 const BASE_URL = "https://vedrunaweb-backend.onrender.com";
 
@@ -31,7 +31,7 @@ interface Publication {
 
 export default function PublicacionPage() {
   const { data: session, status } = useSession();
-  const { id } = useParams(); // Obtener el parámetro 'id' desde la URL
+  const { id } = useParams();
 
   const nombre = session?.user?.name ?? "Anónimo";
   const email = session?.user?.email ?? "email@default.com";
@@ -69,22 +69,6 @@ export default function PublicacionPage() {
   const canDeleteComment = (userEmail: string | undefined) =>
     userEmail?.endsWith("@vedruna.es") ||
     userEmail?.toLowerCase() === "jose.perez@a.vedrunasevillasj.es";
-
-  function tiempoRelativo(fechaISO: string): string {
-    const ahora = new Date();
-    const fecha = new Date(fechaISO);
-    const diffMs = ahora.getTime() - fecha.getTime();
-
-    const minutos = Math.floor(diffMs / (1000 * 60));
-    if (minutos < 1) return "justo ahora";
-    if (minutos < 60) return `hace ${minutos} minuto${minutos > 1 ? "s" : ""}`;
-
-    const horas = Math.floor(minutos / 60);
-    if (horas < 24) return `hace ${horas} hora${horas > 1 ? "s" : ""}`;
-
-    const dias = Math.floor(horas / 24);
-    return `hace ${dias} día${dias > 1 ? "s" : ""}`;
-  }
 
   const handleSubmit = async () => {
     if (!nuevoComentario.trim()) return;
@@ -143,10 +127,8 @@ export default function PublicacionPage() {
 
   return (
     <main className="max-w-4xl mx-auto p-6 space-y-8">
-      {/* Render archivo o imagen */}
       {publicacion?.image && (
         /\.(jpg|jpeg|png|gif|svg)$/i.test(publicacion.image) ? (
-          // Si es una imagen, mostrarla
           <img
             src={publicacion.image}
             alt={publicacion.title}
@@ -181,24 +163,24 @@ export default function PublicacionPage() {
           {comentarios.map((c) => (
             <li
               key={c.idComentario}
-              className="border rounded-lg p-4 shadow-sm flex justify-between items-start"
+              className="border border-gray-200 rounded-xl p-5 shadow-sm bg-white hover:shadow-md transition-all duration-300 flex justify-between items-start"
             >
-              <div>
-                <p className="font-semibold text-gray-900">{c.name || c.email}</p>
-                <p className="text-gray-800">{c.mensaje}</p>
-                <small className="text-gray-500">{tiempoRelativo(c.createdAt)}</small>
+              <div className="flex-1">
+                <p className="font-bold text-gray-800 text-lg">{c.name || c.email}</p>
+                <p className="text-gray-700 mt-1 whitespace-pre-wrap">{c.mensaje}</p>
               </div>
+
               {canDeleteComment(email) && (
                 <button
                   onClick={(e) => {
                     e.preventDefault();
                     confirmDeleteComentario(c.idComentario);
                   }}
-                  className="ml-4 px-3 py-1.5 text-sm bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 transition"
+                  className="ml-4 p-2 rounded-full bg-red-600 text-white hover:bg-red-700 transition"
                   title="Eliminar comentario"
                   disabled={deletingComentario}
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={18} />
                 </button>
               )}
             </li>
@@ -253,4 +235,4 @@ export default function PublicacionPage() {
       )}
     </main>
   );
-} 
+}

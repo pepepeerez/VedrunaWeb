@@ -24,12 +24,14 @@ export default function UsuariosPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Autorización: solo emails con estos dominios o email exacto
+  
+  //  Verifica si el usuario está autorizado por dominio de correo
   const isAuthorized = session?.user?.email
     ? session.user.email.toLowerCase().endsWith("@vedruna.es") ||
       session.user.email.toLowerCase().endsWith("@a.vedrunasevillasj.es")
     : false;
 
+  // Carga todos los perfiles de usuario si el email está autorizado
   useEffect(() => {
     if (status === "loading") return; // esperar sesión
 

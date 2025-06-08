@@ -8,6 +8,7 @@ export default async function Alumnos() {
   const email = session?.user?.email ?? "";
   const nombre = session?.user?.name ?? "";
 
+  // Verifica si el usuario tiene autorización basada en su email
   const isAutorizado =
     email.toLowerCase().endsWith("@vedruna.es") ||
     email.toLowerCase().endsWith("@a.vedrunasevillasj.es");

@@ -17,6 +17,7 @@ export default function LikeButton({ id, likes, userId, onLikeToggle }: Props) {
   const [loading, setLoading] = useState(false);
   const liked = likes.includes(userId);
 
+  // Método para alternar el estado del like en la publicación
   const toggleLike = async () => {
     setLoading(true);
     try {

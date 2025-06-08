@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <div className="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
-      {/* Hero section */}
+      
       <section
         className="relative bg-gradient-to-br from-blue-700 to-blue-900 text-white min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-6 sm:px-12 lg:px-24 text-center pt-16"
       >
@@ -34,7 +34,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Main content */}
+      
       <main className="flex-grow max-w-4xl mx-auto py-16 px-6 sm:px-12 lg:px-0 space-y-20">
         {/* ¿Qué ofrecemos? */}
         <section>

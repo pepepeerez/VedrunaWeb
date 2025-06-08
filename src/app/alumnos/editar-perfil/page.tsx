@@ -18,6 +18,7 @@ export default function EditarPerfilPage() {
   const [mensajeTipo, setMensajeTipo] = useState<"error" | "success" | "info">("info");
   const [loading, setLoading] = useState(true);
 
+  // Carga el perfil del usuario desde el backend usando su email
   useEffect(() => {
     if (!email) return;
 
@@ -49,6 +50,7 @@ export default function EditarPerfilPage() {
     fetchPerfil();
   }, [email]);
 
+  // Envía los cambios del perfil al backend (crear o actualizar)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
@@ -83,7 +85,7 @@ export default function EditarPerfilPage() {
     }
   };
 
-  // Auto ocultar mensaje tras 5 segundos
+   // Oculta automáticamente el mensaje después de 5 segundos
   useEffect(() => {
     if (mensaje) {
       const timer = setTimeout(() => setMensaje(""), 5000);

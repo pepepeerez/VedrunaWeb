@@ -12,6 +12,7 @@ export default function NavbarAlumnos() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Efecto para gestionar scroll y cierre del menú al hacer clic fuera
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);

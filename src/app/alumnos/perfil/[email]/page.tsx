@@ -24,6 +24,7 @@ export default function PerfilUsuarioPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Hook para obtener el perfil del usuario desde el backend usando su email
   useEffect(() => {
     async function fetchPerfil() {
       try {

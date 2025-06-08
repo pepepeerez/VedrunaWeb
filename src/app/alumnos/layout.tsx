@@ -1,5 +1,5 @@
 // app/alumnos/layout.tsx
-import NavbarAlumnos from "@/app/components/NavBarAlumnos"; // Asegúrate que esta ruta es correcta
+import NavbarAlumnos from "@/app/components/NavBarAlumnos"; 
 
 
 export default function AlumnosLayout({ children }: { children: React.ReactNode }) {

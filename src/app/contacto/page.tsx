@@ -14,12 +14,14 @@ export default function Contacto() {
     mensaje: true,
   });
 
+  // Maneja los cambios en los campos del formulario
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Valida el contenido del formulario antes del envío
   const validateForm = () => {
     const newValidaciones = {
       nombre: form.nombre.trim().length > 0, // El nombre no debe estar vacío
@@ -32,6 +34,7 @@ export default function Contacto() {
     return Object.values(newValidaciones).every((val) => val === true);
   };
 
+  // Envía el formulario al backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setEnviado(false);

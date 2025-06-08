@@ -17,10 +17,11 @@ export default function CrearContenidoPage() {
   const [fileMessage, setFileMessage] = useState<string | null>(null); // Mensaje de archivo cargado
   const [previewImage, setPreviewImage] = useState<string | null>(null); // Para mostrar la vista previa
 
+  // Método encargado de gestionar el envío del formulario de creación de contenido.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validación para título, descripción y archivo
+    
     if (!title || !description) {
       setMessage("Por favor completa el título y la descripción.");
       return;

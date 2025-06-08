@@ -41,6 +41,7 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  // Carga las publicaciones con imagen y el número de comentarios al montar el componente
   useEffect(() => {
     if (!isAutorizado) {
       setTimeout(() => router.push("/"), 3000);
@@ -79,11 +80,13 @@ export default function AlumnosPage({ isAutorizado, nombre, email }: Props) {
     fetchPublicaciones();
   }, [isAutorizado, router]);
 
+  // Muestra el modal de confirmación para eliminar publicación
   const confirmDelete = (id: string) => {
     setSelectedId(id);
     setModalOpen(true);
   };
 
+  // Ejecuta la eliminación de la publicación seleccionada
   const handleDelete = async () => {
     if (!selectedId) return;
     setDeletingId(selectedId);
