@@ -12,6 +12,12 @@ export default function NavbarAlumnos() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Función para comprobar si el correo electrónico es válido
+  const isValidEmail = (email: string) => {
+    const allowedDomains = ['@vedruna.es', '@a.vedrunasevillasj.es'];
+    return allowedDomains.some(domain => email.endsWith(domain));
+  };
+
   // Efecto para gestionar scroll y cierre del menú al hacer clic fuera
   useEffect(() => {
     const handleScroll = () => {
@@ -78,7 +84,7 @@ export default function NavbarAlumnos() {
         </div>
 
         <div className="flex items-center gap-4 relative mr-0" ref={menuRef} style={{ minWidth: profileSize }}>
-          {session ? (
+          {session && isValidEmail(session.user?.email || '') ? (
             <>
               <Link
                 href="/subir-contenido"
@@ -157,7 +163,9 @@ export default function NavbarAlumnos() {
             <Link href="/alumnos" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Alumnos</Link>
             <Link href="/alumnos/lista" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Usuarios</Link>
             <Link href="/contacto" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Contacto</Link>
-            <Link href="/subir-contenido" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Añadir contenido</Link>
+            {session && isValidEmail(session.user?.email || '') && (
+              <Link href="/subir-contenido" className="block px-3 py-2 rounded hover:bg-blue-50 hover:text-blue-700 transition" onClick={() => setMenuOpen(false)}>Añadir contenido</Link>
+            )}
           </div>
         </div>
       )}
